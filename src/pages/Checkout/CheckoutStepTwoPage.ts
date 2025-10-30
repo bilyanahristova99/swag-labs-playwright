@@ -1,6 +1,9 @@
 import { Page, expect, Locator } from '@playwright/test';
 import BasePage from '../BasePage';
-import { CartSelectors } from '../../constants/selectors/shared';
+import {
+  ButtonSelectors,
+  CartSelectors,
+} from '../../constants/selectors/shared';
 import { InventorySelectors } from '../../constants/selectors/shared';
 
 export class CheckoutStepTwoPage extends BasePage {
@@ -30,6 +33,10 @@ export class CheckoutStepTwoPage extends BasePage {
 
   public getCartItemByName(productName: string): Locator {
     return this.cartItem.filter({ hasText: productName });
+  }
+
+  public get cancelButton(): Locator {
+    return this.page.locator(ButtonSelectors.BUTTON_SECONDARY);
   }
 
   public async assertProductDetails(

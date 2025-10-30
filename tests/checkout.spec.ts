@@ -134,7 +134,7 @@ test.describe('Checkout Process @checkout', () => {
   });
 
   test.describe('Checkout Step Two Page @checkout', () => {
-    test.beforeAll(async ({ page }) => {
+    test.beforeEach(async ({ page }) => {
       // Setup pages
       loginPage = new LoginPage(page);
       inventoryPage = new InventoryPage(page);
@@ -182,6 +182,14 @@ test.describe('Checkout Process @checkout', () => {
       const actualTotal = await checkoutStepTwoPage.getTotalPrice();
 
       expect(actualTotal).toBe(expectedTotal);
+    });
+
+    test('cancel button navigates back to inventory page @positive', async () => {
+      await expect(checkoutStepTwoPage.cancelButton).toBeVisible();
+      await expect(checkoutStepTwoPage.cancelButton).toBeEnabled();
+      await checkoutStepTwoPage.cancelButton.click();
+      await inventoryPage.assertLoaded();
+      await inventoryPage.assertCartItemCount(1);
     });
   });
 });

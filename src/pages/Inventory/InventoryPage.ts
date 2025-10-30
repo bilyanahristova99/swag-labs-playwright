@@ -15,7 +15,7 @@ export default class InventoryPage extends BasePage {
     return this.page.locator('.inventory_list');
   }
 
-  private get cartBadge(): Locator {
+  public get cartBadge(): Locator {
     return this.page.locator(CartSelectors.CART_BADGE);
   }
 
