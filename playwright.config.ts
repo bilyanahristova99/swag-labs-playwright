@@ -5,7 +5,7 @@ export default defineConfig({
   workers: 1,
   retries: 1,
   forbidOnly: true,
-  reporter: [['list']],
+  reporter: [['list'], ['html']],
   use: {
     baseURL: 'https://www.saucedemo.com/v1/',
     trace: 'on-first-retry',
