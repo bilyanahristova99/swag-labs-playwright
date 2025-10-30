@@ -1,0 +1,36 @@
+{
+  "name": "swag-labs",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "playwright test",
+    "test:ui": "playwright test --ui",
+    "test:headed": "playwright test --headed",
+    "test:debug": "playwright test --debug",
+    "test:login": "playwright test --grep @login",
+    "test:positive": "playwright test --grep @positive",
+    "test:negative": "playwright test --grep @negative",
+    "test:install": "playwright install",
+    "codegen": "playwright codegen",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "lint": "prettier --check .",
+    "install:yarn": "yarn install",
+    "clean": "yarn cache clean && rm -rf node_modules",
+    "clean:install": "yarn clean && yarn install"
+  },
+  "keywords": [
+    "playwright",
+    "testing",
+    "e2e",
+    "sauce-demo"
+  ],
+  "author": "",
+  "license": "ISC",
+  "description": "Playwright automation tests for Sauce Demo application",
+  "devDependencies": {
+    "@playwright/test": "^1.56.1",
+    "prettier": "^3.3.3",
+    "typescript": "^5.6.3"
+  }
+}
