@@ -1,29 +1,67 @@
 # 🚀 Swag Labs Playwright Test Suite
 
-Welcome to my _Swag Labs_ automation solution!  
-This project is your all-access pass to mastering end-to-end testing with **Playwright**, **TypeScript**, and a clean Page Object Model structure.
+Welcome to my _Swag Labs_ automation solution built with Playwright and TypeScript.
 
-## 🌟 What’s Inside?
+## 🌟 What's Inside?
 
-- Lightning-fast Playwright tests for Sauce Demo (Swag Labs)
-- Modular Page Objects for clean, maintainable code
-- Simple scripts to run, debug, and explore your tests
-- Friendly to beginners _and_ power users
+- Comprehensive Playwright tests for Sauce Demo (Swag Labs) e-commerce application
+- Modular Page Object Model with TypeScript for type safety and maintainability
+- Organized test structure covering login, inventory, cart, and checkout flows
+- Centralized test data and selectors for easy maintenance
+- Multiple test execution modes and debugging capabilities
 
-## 🧩 Approach
+## 🧩 Architecture & Approach
 
-- **Page Object Model (POM)**: Each page has a dedicated class under `src/pages/` encapsulating interactions and assertions for clarity and reuse.
-- **Typed contracts**: Lightweight interfaces in `src/interfaces/` (e.g., `IPage`, `ILoginPage`) define consistent capabilities across pages.
-- **Selectors and data**: Centralized selectors in `src/constants/selectors/` and test data in `src/constants/` to keep tests readable and maintainable.
-- **Test design**: Specs focus on behavior, not implementation. Pages handle the “how,” tests assert the “what.”
-- **Deterministic tests**: Prefer explicit waits via Playwright assertions over timeouts. Avoid test coupling and shared state.
-- **Reporting & CI**: HTML report generation and GitHub Actions workflow to run tests on push/PR and upload artifacts.
-- **Scalability**: Clear naming, small page methods, and single-responsibility functions to grow the suite safely.
+### **Page Object Model (POM)**
+- **BasePage**: Abstract base class implementing common page functionality
+- **Specialized Pages**: Each page has a dedicated class extending BasePage:
+  - `LoginPage` - Authentication and login functionality
+  - `InventoryPage` - Product listing, filtering, and selection
+  - `InventoryDetailsPage` - Individual product details and actions
+  - `CartPage` - Shopping cart management
+  - `CheckoutStepOnePage` - Customer information input
+  - `CheckoutStepTwoPage` - Order review and confirmation
+  - `CheckoutCompletePage` - Order completion confirmation
 
-Folder highlights:
-- `src/pages/` – Page Objects (e.g., `LoginPage`, `InventoryPage`, `CartPage`)
-- `src/constants/` – Test data, enums, and shared selectors
-- `tests/` – Behavior-focused spec files
+### **Type Safety & Contracts**
+- **Interfaces**: TypeScript interfaces in `src/interfaces/` define page contracts
+  - `IPage` - Base page interface with common methods
+  - `ILoginPage` - Login-specific functionality contract
+
+### **Centralized Data Management**
+- **Test Data**: User credentials, product information, and checkout data in `src/constants/`
+- **Selectors**: Reusable CSS selectors organized by functionality in `src/constants/selectors/`
+- **Enums**: Type-safe constants for filter options and other fixed values
+
+### **Test Organization**
+- **Tagged Tests**: Tests use `@` tags for easy filtering and execution
+  - `@login`, `@inventory`, `@cart`, `@checkout`, `@detail`
+  - `@positive`, `@negative` for test categorization
+- **Behavior-Driven**: Tests focus on user workflows and business logic
+- **Deterministic**: Uses Playwright's built-in waiting mechanisms and assertions
+
+### **Project Structure**
+```
+src/
+├── pages/                    # Page Object classes
+│   ├── BasePage.ts          # Abstract base page
+│   ├── LoginPage.ts         # Login functionality
+│   ├── CartPage.ts          # Shopping cart
+│   └── Checkout/            # Checkout flow pages
+├── interfaces/              # TypeScript interfaces
+├── constants/               # Test data and configuration
+│   ├── users.ts            # User credentials
+│   ├── products.ts         # Product information
+│   ├── checkoutData.ts     # Checkout form data
+│   ├── enums.ts            # Type-safe constants
+│   └── selectors/          # CSS selectors
+└── tests/                   # Test specifications
+    ├── login.spec.ts       # Authentication tests
+    ├── inventory.spec.ts   # Product listing tests
+    ├── inventoryDetails.spec.ts # Product detail tests
+    ├── cart.spec.ts        # Shopping cart tests
+    └── checkout.spec.ts    # Checkout flow tests
+```
 
 ## 🚦 Setup
 
@@ -52,10 +90,16 @@ yarn test:headed
 # Run tests in debug mode
 yarn test:debug
 
-# Run specific test suites
-yarn test:login      # Login tests only
-yarn test:positive   # Positive test cases only
-yarn test:negative   # Negative test cases only
+# Run specific test suites by feature
+yarn test:login           # Login functionality tests
+yarn test:inventory       # Product listing and filtering tests
+yarn test:inventory-details # Product detail page tests
+yarn test:cart            # Shopping cart tests
+yarn test:checkout        # Checkout flow tests
+
+# Run tests by category
+yarn test:positive        # Positive test cases only
+yarn test:negative        # Negative test cases only
 ```
 
 ## 🛠️ Development Goodies
@@ -70,3 +114,7 @@ yarn format:check
 # Clean and reinstall dependencies
 yarn clean:install
 ```
+
+## 📊 Test Reports
+
+After running tests, HTML reports are generated in the `playwright-report/` directory. Open `playwright-report/index.html` in your browser to view detailed test results, screenshots, and traces.
