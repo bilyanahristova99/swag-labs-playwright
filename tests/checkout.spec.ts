@@ -1,4 +1,4 @@
-import { test } from '@playwright/test';
+import { expect, test } from '@playwright/test';
 import LoginPage from '../src/pages/LoginPage';
 import InventoryPage from '../src/pages/Inventory/InventoryPage';
 import CartPage from '../src/pages/CartPage';
@@ -38,7 +38,7 @@ test.describe('Checkout Step One Page @checkout', () => {
     // Navigate to cart and proceed to checkout
     await cartPage.goto();
     await cartPage.assertLoaded();
-    await cartPage.proceedToCheckout();
+    await cartPage.checkoutButton.click();
     await checkoutStepOnePage.assertLoaded();
   });
 
@@ -47,51 +47,97 @@ test.describe('Checkout Step One Page @checkout', () => {
   });
 
   test('fill valid checkout data and continue button is actionable @positive', async () => {
+    await expect(checkoutStepOnePage.firstNameInput).toBeVisible();
+    await expect(checkoutStepOnePage.lastNameInput).toBeVisible();
+    await expect(checkoutStepOnePage.postalCodeInput).toBeVisible();
+
     await checkoutStepOnePage.fillCheckoutForm(
       checkoutData.firstName,
       checkoutData.lastName,
       checkoutData.postalCode
     );
 
-    await checkoutStepOnePage.clickContinue();
+    await expect(checkoutStepOnePage.continueButton).toBeVisible();
+    await expect(checkoutStepOnePage.continueButton).toBeEnabled();
+    await checkoutStepOnePage.continueButton.click();
     await checkoutStepTwoPage.assertLoaded();
   });
 
   test('show error when firstName is missing @negative', async () => {
+    await expect(checkoutStepOnePage.firstNameInput).toBeVisible();
+    await expect(checkoutStepOnePage.lastNameInput).toBeVisible();
+    await expect(checkoutStepOnePage.postalCodeInput).toBeVisible();
+
     await checkoutStepOnePage.fillCheckoutForm(
       '',
       checkoutData.lastName,
       checkoutData.postalCode
     );
 
-    await checkoutStepOnePage.clickContinue();
-    await checkoutStepOnePage.assertErrorMessageVisible(emptyFirstNameError);
+    await expect(checkoutStepOnePage.continueButton).toBeVisible();
+    await expect(checkoutStepOnePage.continueButton).toBeEnabled();
+    await checkoutStepOnePage.continueButton.click();
+    await expect(checkoutStepOnePage.errorMessage).toBeVisible();
+    await expect(checkoutStepOnePage.errorMessage).toContainText(
+      emptyFirstNameError
+    );
   });
 
   test('show error when lastName is missing @negative', async () => {
+    await expect(checkoutStepOnePage.firstNameInput).toBeVisible();
+    await expect(checkoutStepOnePage.lastNameInput).toBeVisible();
+    await expect(checkoutStepOnePage.postalCodeInput).toBeVisible();
+
     await checkoutStepOnePage.fillCheckoutForm(
       checkoutData.firstName,
       '',
       checkoutData.postalCode
     );
 
-    await checkoutStepOnePage.clickContinue();
-    await checkoutStepOnePage.assertErrorMessageVisible(emptyLastNameError);
+    await expect(checkoutStepOnePage.continueButton).toBeVisible();
+    await expect(checkoutStepOnePage.continueButton).toBeEnabled();
+    await checkoutStepOnePage.continueButton.click();
+    await expect(checkoutStepOnePage.errorMessage).toBeVisible();
+    await expect(checkoutStepOnePage.errorMessage).toContainText(
+      emptyLastNameError
+    );
   });
 
   test('show error when postalCode is missing @negative', async () => {
+    await expect(checkoutStepOnePage.firstNameInput).toBeVisible();
+    await expect(checkoutStepOnePage.lastNameInput).toBeVisible();
+    await expect(checkoutStepOnePage.postalCodeInput).toBeVisible();
+
     await checkoutStepOnePage.fillCheckoutForm(
       checkoutData.firstName,
       checkoutData.lastName,
       ''
     );
 
-    await checkoutStepOnePage.clickContinue();
-    await checkoutStepOnePage.assertErrorMessageVisible(emptyPostalCodeError);
+    await expect(checkoutStepOnePage.continueButton).toBeVisible();
+    await expect(checkoutStepOnePage.continueButton).toBeEnabled();
+    await checkoutStepOnePage.continueButton.click();
+
+    await expect(checkoutStepOnePage.errorMessage).toBeVisible();
+    await expect(checkoutStepOnePage.errorMessage).toContainText(
+      emptyPostalCodeError
+    );
   });
 
   test('cancel button navigates back to cart @positive', async () => {
-    await checkoutStepOnePage.clickCancel();
+    await expect(checkoutStepOnePage.cancelButton).toBeVisible();
+    await expect(checkoutStepOnePage.cancelButton).toBeEnabled();
+    await checkoutStepOnePage.cancelButton.click();
     await cartPage.assertLoaded();
+  });
+
+  test.describe('Checkout Step Two Page @checkout', () => {
+    test.beforeEach(async ({ page }) => {
+      checkoutStepTwoPage = new CheckoutStepTwoPage(page);
+    });
+
+    test('validate product details for added products @positive', async () => {});
+
+    test('validate total price for added products @positive', async () => {});
   });
 });
