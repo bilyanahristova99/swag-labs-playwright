@@ -14,4 +14,5 @@ export const InventorySelectors = {
 export const CartSelectors = {
   CART_BADGE: '.shopping_cart_badge',
   CART_LINK: '.shopping_cart_link',
+  CART_ITEM: '.cart_item',
 };
