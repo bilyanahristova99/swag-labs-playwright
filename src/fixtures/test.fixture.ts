@@ -7,10 +7,12 @@ import { CheckoutStepTwoPage } from '../pages/Checkout/CheckoutStepTwoPage';
 import { STANDARD_USER } from '../constants/users';
 import { SAUCE_LABS_BACKPACK } from '../constants/products';
 import checkoutData from '../constants/checkoutData';
+import InventoryDetailsPage from '../pages/Inventory/InventoryDetailsPage';
 
 export type PageObjects = {
   loginPage: LoginPage;
   inventoryPage: InventoryPage;
+  inventoryDetailsPage: InventoryDetailsPage;
   cartPage: CartPage;
   checkoutStepOnePage: CheckoutStepOnePage;
   checkoutStepTwoPage: CheckoutStepTwoPage;
@@ -29,6 +31,9 @@ export const test = base.extend<PageObjects & FlowFixtures>({
   },
   inventoryPage: async ({ page }, use) => {
     await use(new InventoryPage(page));
+  },
+  inventoryDetailsPage: async ({ page }, use) => {
+    await use(new InventoryDetailsPage(page));
   },
   cartPage: async ({ page }, use) => {
     await use(new CartPage(page));
