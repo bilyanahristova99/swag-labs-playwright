@@ -46,9 +46,6 @@ yarn test:install
 # Run all tests
 yarn test
 
-# Run tests with UI mode
-yarn test:ui
-
 # Run tests in headed mode (see browser)
 yarn test:headed
 
