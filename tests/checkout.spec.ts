@@ -1,4 +1,4 @@
-import test, { expect } from '../src/fixtures/test.fixture';
+import { test, expect } from '../src/fixtures/test.fixture';
 import checkoutData from '../src/constants/checkoutData';
 import { SAUCE_LABS_BACKPACK } from '../src/constants/products';
 

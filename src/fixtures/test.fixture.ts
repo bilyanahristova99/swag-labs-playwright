@@ -8,7 +8,7 @@ import { STANDARD_USER } from '../constants/users';
 import { SAUCE_LABS_BACKPACK } from '../constants/products';
 import checkoutData from '../constants/checkoutData';
 
-type PageObjects = {
+export type PageObjects = {
   loginPage: LoginPage;
   inventoryPage: InventoryPage;
   cartPage: CartPage;
@@ -16,13 +16,13 @@ type PageObjects = {
   checkoutStepTwoPage: CheckoutStepTwoPage;
 };
 
-type FlowFixtures = {
+export type FlowFixtures = {
   loggedIn: void;
   checkoutStepOneReady: void;
   checkoutStepTwoReady: void;
 };
 
-const test = base.extend<PageObjects & FlowFixtures>({
+export const test = base.extend<PageObjects & FlowFixtures>({
   // Page object fixtures
   loginPage: async ({ page }, use) => {
     await use(new LoginPage(page));
@@ -81,6 +81,4 @@ const test = base.extend<PageObjects & FlowFixtures>({
   },
 });
 
-// Re-export expect for cleaner test assertions
-export const expect = test.expect;
-export default test;
+export { expect } from '@playwright/test';
