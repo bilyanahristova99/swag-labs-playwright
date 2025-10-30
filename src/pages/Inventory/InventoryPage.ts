@@ -19,11 +19,11 @@ export default class InventoryPage extends BasePage {
     return this.page.locator(CartSelectors.CART_BADGE);
   }
 
-  private get cartLink(): Locator {
+  public get cartLink(): Locator {
     return this.page.locator(CartSelectors.CART_LINK);
   }
 
-  private get sortDropdown(): Locator {
+  public get sortDropdown(): Locator {
     return this.page.locator('.product_sort_container');
   }
 
@@ -60,8 +60,6 @@ export default class InventoryPage extends BasePage {
   }
 
   public async assertCartItemCount(expectedCount: number): Promise<void> {
-    await expect(this.cartLink).toBeVisible();
-
     if (expectedCount === 0) {
       // When cart is empty, the badge element is not rendered and is hidden
       await expect(this.cartBadge).toBeHidden();
@@ -72,7 +70,6 @@ export default class InventoryPage extends BasePage {
   }
 
   public async sortBy(sortOption: FILTER_OPTIONS): Promise<void> {
-    await expect(this.sortDropdown).toBeVisible();
     await this.sortDropdown.selectOption(sortOption);
   }
 

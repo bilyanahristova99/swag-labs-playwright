@@ -1,4 +1,4 @@
-import { test } from '@playwright/test';
+import { test, expect } from '@playwright/test';
 import LoginPage from '../src/pages/LoginPage';
 import InventoryPage from '../src/pages/Inventory/InventoryPage';
 import CartPage from '../src/pages/CartPage';
@@ -47,12 +47,14 @@ test.describe('Inventory Page @inventory', () => {
   });
 
   test('add single product to cart @positive', async () => {
+    await expect(inventoryPage.cartLink).toBeVisible();
     await inventoryPage.assertCartItemCount(0);
     await inventoryPage.addProductToCart(SAUCE_LABS_BACKPACK.name);
     await inventoryPage.assertCartItemCount(1);
   });
 
   test('add multiple products to cart @positive', async () => {
+    await expect(inventoryPage.cartLink).toBeVisible();
     await inventoryPage.assertCartItemCount(0);
     await inventoryPage.addProductToCart(SAUCE_LABS_BACKPACK.name);
     await inventoryPage.addProductToCart(SAUCE_LABS_BIKE_LIGHT.name);
@@ -62,6 +64,7 @@ test.describe('Inventory Page @inventory', () => {
   });
 
   test('remove product from cart @positive', async () => {
+    await expect(inventoryPage.cartLink).toBeVisible();
     await inventoryPage.assertCartItemCount(0);
     await inventoryPage.addProductToCart(SAUCE_LABS_BACKPACK.name);
     await inventoryPage.addProductToCart(SAUCE_LABS_BIKE_LIGHT.name);
@@ -73,6 +76,7 @@ test.describe('Inventory Page @inventory', () => {
 
   test.describe('Sorting @sort', () => {
     test('user can sort the products by name (a to z) @positive', async () => {
+      await expect(inventoryPage.sortDropdown).toBeVisible();
       await inventoryPage.sortBy(FILTER_OPTIONS.NAME_A_TO_Z);
       await inventoryPage.assertProductsSortedByName(
         FILTER_OPTIONS.NAME_A_TO_Z
@@ -80,6 +84,7 @@ test.describe('Inventory Page @inventory', () => {
     });
 
     test('user can sort the products by name (z to a) @positive', async () => {
+      await expect(inventoryPage.sortDropdown).toBeVisible();
       await inventoryPage.sortBy(FILTER_OPTIONS.NAME_Z_TO_A);
       await inventoryPage.assertProductsSortedByName(
         FILTER_OPTIONS.NAME_Z_TO_A
@@ -87,6 +92,7 @@ test.describe('Inventory Page @inventory', () => {
     });
 
     test('user can sort the products by price (low to high) @positive', async () => {
+      await expect(inventoryPage.sortDropdown).toBeVisible();
       await inventoryPage.sortBy(FILTER_OPTIONS.PRICE_LOW_TO_HIGH);
       await inventoryPage.assertProductsSortedByPrice(
         FILTER_OPTIONS.PRICE_LOW_TO_HIGH
@@ -94,6 +100,7 @@ test.describe('Inventory Page @inventory', () => {
     });
 
     test('user can sort the products by price (high to low) @positive', async () => {
+      await expect(inventoryPage.sortDropdown).toBeVisible();
       await inventoryPage.sortBy(FILTER_OPTIONS.PRICE_HIGH_TO_LOW);
       await inventoryPage.assertProductsSortedByPrice(
         FILTER_OPTIONS.PRICE_HIGH_TO_LOW
