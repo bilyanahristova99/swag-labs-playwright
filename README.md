@@ -10,6 +10,21 @@ This project is your all-access pass to mastering end-to-end testing with **Play
 - Simple scripts to run, debug, and explore your tests
 - Friendly to beginners _and_ power users
 
+## 🧩 Approach
+
+- **Page Object Model (POM)**: Each page has a dedicated class under `src/pages/` encapsulating interactions and assertions for clarity and reuse.
+- **Typed contracts**: Lightweight interfaces in `src/interfaces/` (e.g., `IPage`, `ILoginPage`) define consistent capabilities across pages.
+- **Selectors and data**: Centralized selectors in `src/constants/selectors/` and test data in `src/constants/` to keep tests readable and maintainable.
+- **Test design**: Specs focus on behavior, not implementation. Pages handle the “how,” tests assert the “what.”
+- **Deterministic tests**: Prefer explicit waits via Playwright assertions over timeouts. Avoid test coupling and shared state.
+- **Reporting & CI**: HTML report generation and GitHub Actions workflow to run tests on push/PR and upload artifacts.
+- **Scalability**: Clear naming, small page methods, and single-responsibility functions to grow the suite safely.
+
+Folder highlights:
+- `src/pages/` – Page Objects (e.g., `LoginPage`, `InventoryPage`, `CartPage`)
+- `src/constants/` – Test data, enums, and shared selectors
+- `tests/` – Behavior-focused spec files
+
 ## 🚦 Setup
 
 Make sure you have **Yarn** installed:
@@ -49,17 +64,11 @@ yarn test:negative   # Negative test cases only
 ## 🛠️ Development Goodies
 
 ```bash
-# Code generation (record new tests)
-yarn codegen
-
 # Format code
 yarn format
 
 # Check code formatting
 yarn format:check
-
-# Lint code
-yarn lint
 
 # Clean and reinstall dependencies
 yarn clean:install

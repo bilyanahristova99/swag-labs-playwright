@@ -4,17 +4,18 @@
   "main": "index.js",
   "scripts": {
     "test": "playwright test",
-    "test:ui": "playwright test --ui",
     "test:headed": "playwright test --headed",
     "test:debug": "playwright test --debug",
     "test:login": "playwright test --grep @login",
+    "test:inventory": "playwright test --grep @inventory",
+    "test:checkout": "playwright test --grep @checkout",
+    "test:cart": "playwright test --grep @cart",
+    "test:inventory-details": "playwright test --grep @detail",
     "test:positive": "playwright test --grep @positive",
     "test:negative": "playwright test --grep @negative",
     "test:install": "playwright install",
-    "codegen": "playwright codegen",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "lint": "prettier --check .",
     "install:yarn": "yarn install",
     "clean": "yarn cache clean && rm -rf node_modules",
     "clean:install": "yarn clean && yarn install"
@@ -25,7 +26,7 @@
     "e2e",
     "sauce-demo"
   ],
-  "author": "",
+  "author": "Bilyana Hristova",
   "license": "ISC",
   "description": "Playwright automation tests for Sauce Demo application",
   "devDependencies": {
