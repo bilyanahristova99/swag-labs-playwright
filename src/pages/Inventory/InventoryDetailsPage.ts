@@ -23,15 +23,15 @@ export default class InventoryDetailsPage extends BasePage {
     return this.page.getByRole('img');
   }
 
-  private get addToCartButton(): Locator {
+  public get addToCartButton(): Locator {
     return this.page.getByRole('button', { name: 'Add to cart' });
   }
 
-  private get removeFromCartButton(): Locator {
+  public get removeFromCartButton(): Locator {
     return this.page.getByRole('button', { name: 'Remove' });
   }
 
-  private get backButton(): Locator {
+  public get backButton(): Locator {
     return this.page.getByRole('button', { name: 'Back' });
   }
 
@@ -39,7 +39,7 @@ export default class InventoryDetailsPage extends BasePage {
     return this.page.locator(CartSelectors.CART_BADGE);
   }
 
-  private get cartLink(): Locator {
+  public get cartLink(): Locator {
     return this.page.locator(CartSelectors.CART_LINK);
   }
 
@@ -63,27 +63,6 @@ export default class InventoryDetailsPage extends BasePage {
   public async assertProductImage(): Promise<void> {
     await expect(this.productImage).toBeVisible();
     await expect(this.productImage).toHaveAttribute('src');
-  }
-
-  public async addProductToCart(): Promise<void> {
-    await expect(this.addToCartButton).toBeVisible();
-    await this.addToCartButton.click();
-  }
-
-  public async removeProductFromCart(): Promise<void> {
-    await expect(this.removeFromCartButton).toBeVisible();
-    await this.removeFromCartButton.click();
-    await expect(this.addToCartButton).toBeVisible();
-  }
-
-  public async goToInventory(): Promise<void> {
-    await expect(this.backButton).toBeVisible();
-    await this.backButton.click();
-  }
-
-  public async goToShoppingCart(): Promise<void> {
-    await expect(this.cartLink).toBeVisible();
-    await this.cartLink.click();
   }
 
   public async assertCartItemCount(expectedCount: number): Promise<void> {

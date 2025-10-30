@@ -1,4 +1,4 @@
-import { test } from '@playwright/test';
+import { expect, test } from '@playwright/test';
 import LoginPage from '../src/pages/LoginPage';
 import InventoryPage from '../src/pages/Inventory/InventoryPage';
 import InventoryDetailsPage from '../src/pages/Inventory/InventoryDetailsPage';
@@ -43,25 +43,32 @@ test.describe('Product Detail Page @detail', () => {
 
   test('add product to cart from detail page @positive', async () => {
     await productDetailPage.assertCartItemCount(0);
-    await productDetailPage.addProductToCart();
+    await expect(productDetailPage.addToCartButton).toBeVisible();
+    await productDetailPage.addToCartButton.click();
     await productDetailPage.assertCartItemCount(1);
   });
 
   test('remove product from cart on detail page @positive', async () => {
-    await productDetailPage.addProductToCart();
+    await expect(productDetailPage.addToCartButton).toBeVisible();
+    await productDetailPage.addToCartButton.click();
     await productDetailPage.assertCartItemCount(1);
-    await productDetailPage.removeProductFromCart();
+    await expect(productDetailPage.removeFromCartButton).toBeVisible();
+    await productDetailPage.removeFromCartButton.click();
+    await expect(productDetailPage.addToCartButton).toBeVisible();
     await productDetailPage.assertCartItemCount(0);
   });
 
   test('navigate back to inventory from detail page @positive', async () => {
-    await productDetailPage.goToInventory();
+    await expect(productDetailPage.backButton).toBeVisible();
+    await productDetailPage.backButton.click();
     await inventoryPage.assertLoaded();
   });
 
   test('navigate to cart from detail page @positive', async () => {
-    await productDetailPage.addProductToCart();
-    await productDetailPage.goToShoppingCart();
+    await expect(productDetailPage.addToCartButton).toBeVisible();
+    await productDetailPage.addToCartButton.click();
+    await expect(productDetailPage.cartLink).toBeVisible();
+    await productDetailPage.cartLink.click();
     await cartPage.assertLoaded();
   });
 });
