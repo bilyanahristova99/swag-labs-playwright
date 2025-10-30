@@ -1,0 +1,26 @@
+name: Playwright Tests for Swag Labs
+
+on:
+  workflow_dispatch: # Allows you to manually trigger the workflow
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Use Node.js 18.x
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
+
+      - name: Install Playwright Browsers
+        run: yarn exec playwright install --with-deps
+
+      - name: Run Playwright tests
+        run: yarn test
