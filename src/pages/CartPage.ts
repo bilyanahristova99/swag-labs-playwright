@@ -12,12 +12,12 @@ export default class CartPage extends BasePage {
     return this.page.locator('.cart_list');
   }
 
-  private get cartItem(): Locator {
-    return this.page.locator('.cart_item');
-  }
-
   private get cartFooter(): Locator {
     return this.page.locator('.cart_footer');
+  }
+
+  public get cartItem(): Locator {
+    return this.page.locator('.cart_item');
   }
 
   public get continueShoppingButton(): Locator {
@@ -32,22 +32,8 @@ export default class CartPage extends BasePage {
     await expect(this.cartList).toBeVisible();
   }
 
-  private getCartItemByName(productName: string): Locator {
+  public getCartItemByName(productName: string): Locator {
     return this.cartItem.filter({ hasText: productName });
-  }
-
-  public async assertCartItemCount(expectedCount: number): Promise<void> {
-    await expect(this.cartItem).toHaveCount(expectedCount);
-  }
-
-  public async assertProductInCart(productName: string): Promise<void> {
-    const item = this.getCartItemByName(productName);
-    await expect(item).toBeVisible();
-  }
-
-  public async assertProductNotInCart(productName: string): Promise<void> {
-    const item = this.getCartItemByName(productName);
-    await expect(item).not.toBeVisible();
   }
 
   public async assertProductDetails(
@@ -79,13 +65,5 @@ export default class CartPage extends BasePage {
       .locator(ButtonSelectors.BUTTON_SECONDARY)
       .filter({ hasText: 'Remove' });
     await removeButton.click();
-  }
-
-  public async continueShopping(): Promise<void> {
-    await this.continueShoppingButton.click();
-  }
-
-  public async proceedToCheckout(): Promise<void> {
-    await this.checkoutButton.click();
   }
 }

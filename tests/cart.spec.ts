@@ -55,29 +55,43 @@ test.describe('Cart Page @cart', () => {
 
   test('remove one of the two products @positive', async () => {
     await cartPage.removeProduct(SAUCE_LABS_BIKE_LIGHT.name);
-    await cartPage.assertProductNotInCart(SAUCE_LABS_BACKPACK.name);
-    await cartPage.assertProductInCart(SAUCE_LABS_BIKE_LIGHT.name);
-    await cartPage.assertCartItemCount(1);
+    await expect(cartPage.cartItem).toHaveCount(1);
+    await expect(
+      cartPage.getCartItemByName(SAUCE_LABS_BIKE_LIGHT.name)
+    ).not.toBeVisible();
+    await expect(
+      cartPage.getCartItemByName(SAUCE_LABS_BACKPACK.name)
+    ).toBeVisible();
   });
 
   test('click continue shopping button @positive', async () => {
     await expect(cartPage.continueShoppingButton).toBeVisible();
-    await cartPage.continueShopping();
+    await cartPage.continueShoppingButton.click();
     await inventoryPage.assertLoaded();
   });
 
   test('remove all products from cart @positive', async () => {
     await cartPage.removeProduct(SAUCE_LABS_BACKPACK.name);
     await cartPage.removeProduct(SAUCE_LABS_BIKE_LIGHT.name);
-    await cartPage.assertCartItemCount(0);
-    await cartPage.assertProductNotInCart(SAUCE_LABS_BACKPACK.name);
-    await cartPage.assertProductNotInCart(SAUCE_LABS_BIKE_LIGHT.name);
+    await expect(cartPage.cartItem).toHaveCount(0);
+    await expect(
+      cartPage.getCartItemByName(SAUCE_LABS_BACKPACK.name)
+    ).not.toBeVisible();
+    await expect(
+      cartPage.getCartItemByName(SAUCE_LABS_BIKE_LIGHT.name)
+    ).not.toBeVisible();
   });
 
   test('checkout button should be disabled if cart is empty @negative', async () => {
     await cartPage.removeProduct(SAUCE_LABS_BACKPACK.name);
     await cartPage.removeProduct(SAUCE_LABS_BIKE_LIGHT.name);
-    await cartPage.assertCartItemCount(0);
+    await expect(cartPage.cartItem).toHaveCount(0);
+    await expect(
+      cartPage.getCartItemByName(SAUCE_LABS_BACKPACK.name)
+    ).not.toBeVisible();
+    await expect(
+      cartPage.getCartItemByName(SAUCE_LABS_BIKE_LIGHT.name)
+    ).not.toBeVisible();
     await expect(cartPage.checkoutButton).toBeDisabled();
   });
 });
