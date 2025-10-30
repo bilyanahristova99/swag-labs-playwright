@@ -28,17 +28,13 @@ export default class LoginPage extends BasePage implements ILoginPage {
     await expect(this.page).toHaveURL(
       'https://www.saucedemo.com/v1/index.html'
     );
-    await expect(this.usernameInput).toBeVisible();
-    await expect(this.passwordInput).toBeVisible();
-    await expect(this.loginButton).toBeVisible();
+
     await this.usernameInput.fill(username);
     await this.passwordInput.fill(password);
     await this.loginButton.click();
     await this.verifyAuthenticationSuccess();
   }
 
-  // IT will be good to have && response.status() === 200 to verify the authentication success, but without real token is quite challenging :D
-  // Also I personally will use wawitForResponse((response) => response.url().includes('https://www.saucedemo.com/v1/inventory.html')) to verify the authentication success, but without real token is quite challenging :D
   public async verifyAuthenticationSuccess(): Promise<void> {
     await this.page.waitForURL('https://www.saucedemo.com/v1/inventory.html');
   }
