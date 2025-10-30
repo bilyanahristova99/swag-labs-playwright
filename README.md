@@ -1,120 +1,76 @@
-# 🚀 Swag Labs Playwright Test Suite
+# Swag Labs E2E Tests (Playwright + TypeScript)
 
-Welcome to my _Swag Labs_ automation solution built with Playwright and TypeScript.
+This project contains end‑to‑end tests for Sauce Demo (Swag Labs) using Playwright and TypeScript. It follows a clean Page Object Model and uses simple tags to run focused suites.
 
-## 🌟 What's Inside?
+## Quick start
 
-- Comprehensive Playwright tests for Sauce Demo (Swag Labs) e-commerce application
-- Modular Page Object Model with TypeScript for type safety and maintainability
-- Organized test structure covering login, inventory, cart, and checkout flows
-- Centralized test data and selectors for easy maintenance
-- Multiple test execution modes and debugging capabilities
-
-## 🧩 Architecture & Approach
-
-### **Page Object Model (POM)**
-- **BasePage**: Abstract base class implementing common page functionality
-- **Specialized Pages**: Each page has a dedicated class extending BasePage:
-  - `LoginPage` - Authentication and login functionality
-  - `InventoryPage` - Product listing, filtering, and selection
-  - `InventoryDetailsPage` - Individual product details and actions
-  - `CartPage` - Shopping cart management
-  - `CheckoutStepOnePage` - Customer information input
-  - `CheckoutStepTwoPage` - Order review and confirmation
-  - `CheckoutCompletePage` - Order completion confirmation
-
-### **Type Safety & Contracts**
-- **Interfaces**: TypeScript interfaces in `src/interfaces/` define page contracts
-  - `IPage` - Base page interface with common methods
-  - `ILoginPage` - Login-specific functionality contract
-
-### **Centralized Data Management**
-- **Test Data**: User credentials, product information, and checkout data in `src/constants/`
-- **Selectors**: Reusable CSS selectors organized by functionality in `src/constants/selectors/`
-- **Enums**: Type-safe constants for filter options and other fixed values
-
-### **Test Organization**
-- **Tagged Tests**: Tests use `@` tags for easy filtering and execution
-  - `@login`, `@inventory`, `@cart`, `@checkout`, `@detail`
-  - `@positive`, `@negative` for test categorization
-- **Behavior-Driven**: Tests focus on user workflows and business logic
-- **Deterministic**: Uses Playwright's built-in waiting mechanisms and assertions
-
-### **Project Structure**
-```
-src/
-├── pages/                    # Page Object classes
-│   ├── BasePage.ts          # Abstract base page
-│   ├── LoginPage.ts         # Login functionality
-│   ├── CartPage.ts          # Shopping cart
-│   └── Checkout/            # Checkout flow pages
-├── interfaces/              # TypeScript interfaces
-├── constants/               # Test data and configuration
-│   ├── users.ts            # User credentials
-│   ├── products.ts         # Product information
-│   ├── checkoutData.ts     # Checkout form data
-│   ├── enums.ts            # Type-safe constants
-│   └── selectors/          # CSS selectors
-└── tests/                   # Test specifications
-    ├── login.spec.ts       # Authentication tests
-    ├── inventory.spec.ts   # Product listing tests
-    ├── inventoryDetails.spec.ts # Product detail tests
-    ├── cart.spec.ts        # Shopping cart tests
-    └── checkout.spec.ts    # Checkout flow tests
-```
-
-## 🚦 Setup
-
-Make sure you have **Yarn** installed:
+Prerequisites: Node.js, Yarn.
 
 ```bash
-# Install Yarn globally (if not already installed)
-npm install -g yarn
-
-# Install dependencies
+# 1) Install dependencies
 yarn install
 
-# Install Playwright browsers
+# 2) Install Playwright browsers
 yarn test:install
+
+# 3) Run all tests (headless)
+yarn test
 ```
 
-## 🧪 Running Tests
+Useful variants:
 
 ```bash
-# Run all tests
-yarn test
-
-# Run tests in headed mode (see browser)
+# See the browser while tests run
 yarn test:headed
 
-# Run tests in debug mode
+# Open the Playwright debugger
 yarn test:debug
 
-# Run specific test suites by feature
-yarn test:login           # Login functionality tests
-yarn test:inventory       # Product listing and filtering tests
-yarn test:inventory-details # Product detail page tests
-yarn test:cart            # Shopping cart tests
-yarn test:checkout        # Checkout flow tests
+# Run by feature
+yarn test:login
+yarn test:inventory
+yarn test:inventory-details
+yarn test:cart
+yarn test:checkout
 
-# Run tests by category
-yarn test:positive        # Positive test cases only
-yarn test:negative        # Negative test cases only
+# Run by category
+yarn test:positive
+yarn test:negative
 ```
 
-## 🛠️ Development Goodies
+## How it’s organized
+
+```
+src/
+  pages/            # Page Objects (BasePage, Login, Inventory, Cart, Checkout*)
+  interfaces/       # TS interfaces that define page contracts
+  constants/        # Users, products, checkout data, enums, shared selectors
+  fixtures/         # Project fixtures (e.g., test.fixture.ts)
+tests/              # Specs: login, inventory, details, cart, checkout
+```
+
+- Base URL is set in `playwright.config.ts` to `https://www.saucedemo.com/v1/`.
+- Reports are generated in `playwright-report/` after each run.
+
+## Approach
+
+- Page Object Model keeps locators and actions in one place.
+- TypeScript interfaces document expected page capabilities.
+- Tests are tagged (e.g., `@login`, `@inventory`, `@cart`, `@checkout`, `@detail`, `@positive`, `@negative`) so you can run exactly what you need.
+
+## Developer helpers
 
 ```bash
 # Format code
 yarn format
 
-# Check code formatting
+# Check formatting
 yarn format:check
 
-# Clean and reinstall dependencies
+# Clean install
 yarn clean:install
 ```
 
-## 📊 Test Reports
+## Reports
 
-After running tests, HTML reports are generated in the `playwright-report/` directory. Open `playwright-report/index.html` in your browser to view detailed test results, screenshots, and traces.
+Open `playwright-report/index.html` to view the HTML report with steps, screenshots, and traces.
