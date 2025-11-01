@@ -58,6 +58,24 @@ tests/              # Specs: login, inventory, details, cart, checkout
 - TypeScript interfaces document expected page capabilities.
 - Tests are tagged (e.g., `@login`, `@inventory`, `@cart`, `@checkout`, `@detail`, `@positive`, `@negative`) so you can run exactly what you need.
 
+## Test strategy
+
+There are two styles of coverage so the suite stays fast for day-to-day work but still checks real user journeys.
+
+**Smoke E2E (flow-level, quick)**
+
+- Purpose: Prove that the must-have journeys work end-to-end (login → browse → add to cart → checkout).
+- What we check: Page availability, key navigation, and critical UI—not pixel-perfect detail.
+- Why: Keeps feedback fast and stable while still catching release blockers.
+- When to run: Every PR and every main build.
+
+**Page-specific specs (detail-level, thorough)**
+
+- Purpose: Validate each screen in isolation so we catch regressions close to where they happen.
+- What we check: Images, descriptions, pricing, sorting, error states, and edge cases.
+- Why: Keeps the smoke layer lean and failures highly diagnosable.
+- When to run: One good option is whenever a PR touches that feature area.
+
 ## Developer helpers
 
 ```bash
