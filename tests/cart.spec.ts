@@ -14,7 +14,9 @@ test.describe('Cart Page @cart', () => {
     await cartPage.assertLoaded();
   });
 
-  test('validate product details for both products @positive', async ({ cartPage }) => {
+  test('validate product details for both products @positive', async ({
+    cartPage,
+  }) => {
     await cartPage.assertProductDetails(
       SAUCE_LABS_BACKPACK.name,
       SAUCE_LABS_BACKPACK.price,
@@ -41,7 +43,10 @@ test.describe('Cart Page @cart', () => {
     ).toBeVisible();
   });
 
-  test('click continue shopping button @positive', async ({ cartPage, inventoryPage }) => {
+  test('click continue shopping button @positive', async ({
+    cartPage,
+    inventoryPage,
+  }) => {
     await expect(cartPage.continueShoppingButton).toBeVisible();
     await cartPage.continueShoppingButton.click();
     await inventoryPage.assertLoaded();
@@ -59,7 +64,9 @@ test.describe('Cart Page @cart', () => {
     ).not.toBeVisible();
   });
 
-  test('checkout button should be disabled if cart is empty @negative', async ({ cartPage }) => {
+  test('checkout button should be disabled if cart is empty @negative', async ({
+    cartPage,
+  }) => {
     await cartPage.removeProduct(SAUCE_LABS_BACKPACK.name);
     await cartPage.removeProduct(SAUCE_LABS_BIKE_LIGHT.name);
     await expect(cartPage.cartItem).toHaveCount(0);

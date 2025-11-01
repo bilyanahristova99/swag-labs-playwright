@@ -3,7 +3,6 @@ import checkoutData from '../src/constants/checkoutData';
 import { SAUCE_LABS_BACKPACK } from '../src/constants/products';
 
 test.describe('Checkout Process @checkout', () => {
-
   test.describe('Checkout Step One Page @checkout', () => {
     const emptyFirstNameError = 'First Name is required';
     const emptyLastNameError = 'Last Name is required';
@@ -14,7 +13,10 @@ test.describe('Checkout Process @checkout', () => {
       await checkoutStepOneReady();
     });
 
-    test('fill valid checkout data and continue button is actionable @positive', async ({ checkoutStepTwoPage, checkoutStepOnePage }) => {
+    test('fill valid checkout data and continue button is actionable @positive', async ({
+      checkoutStepTwoPage,
+      checkoutStepOnePage,
+    }) => {
       await expect(checkoutStepOnePage.firstNameInput).toBeVisible();
       await expect(checkoutStepOnePage.lastNameInput).toBeVisible();
       await expect(checkoutStepOnePage.postalCodeInput).toBeVisible();
@@ -31,7 +33,9 @@ test.describe('Checkout Process @checkout', () => {
       await checkoutStepTwoPage.assertLoaded();
     });
 
-    test('show error when firstName is missing @negative', async ({ checkoutStepOnePage }) => {
+    test('show error when firstName is missing @negative', async ({
+      checkoutStepOnePage,
+    }) => {
       await expect(checkoutStepOnePage.firstNameInput).toBeVisible();
       await expect(checkoutStepOnePage.lastNameInput).toBeVisible();
       await expect(checkoutStepOnePage.postalCodeInput).toBeVisible();
@@ -51,7 +55,9 @@ test.describe('Checkout Process @checkout', () => {
       );
     });
 
-    test('show error when lastName is missing @negative', async ({ checkoutStepOnePage }) => {
+    test('show error when lastName is missing @negative', async ({
+      checkoutStepOnePage,
+    }) => {
       await expect(checkoutStepOnePage.firstNameInput).toBeVisible();
       await expect(checkoutStepOnePage.lastNameInput).toBeVisible();
       await expect(checkoutStepOnePage.postalCodeInput).toBeVisible();
@@ -71,7 +77,9 @@ test.describe('Checkout Process @checkout', () => {
       );
     });
 
-    test('show error when postalCode is missing @negative', async ({ checkoutStepOnePage }) => {
+    test('show error when postalCode is missing @negative', async ({
+      checkoutStepOnePage,
+    }) => {
       await expect(checkoutStepOnePage.firstNameInput).toBeVisible();
       await expect(checkoutStepOnePage.lastNameInput).toBeVisible();
       await expect(checkoutStepOnePage.postalCodeInput).toBeVisible();
@@ -92,7 +100,10 @@ test.describe('Checkout Process @checkout', () => {
       );
     });
 
-    test('cancel button navigates back to cart @positive', async ({ checkoutStepOnePage, cartPage }) => {
+    test('cancel button navigates back to cart @positive', async ({
+      checkoutStepOnePage,
+      cartPage,
+    }) => {
       await expect(checkoutStepOnePage.cancelButton).toBeVisible();
       await expect(checkoutStepOnePage.cancelButton).toBeEnabled();
       await checkoutStepOnePage.cancelButton.click();
@@ -106,7 +117,9 @@ test.describe('Checkout Process @checkout', () => {
       await checkoutStepTwoReady();
     });
 
-    test('validate product details for added products @positive', async ({ checkoutStepTwoPage }) => {
+    test('validate product details for added products @positive', async ({
+      checkoutStepTwoPage,
+    }) => {
       await checkoutStepTwoPage.assertProductDetails(
         SAUCE_LABS_BACKPACK.name,
         SAUCE_LABS_BACKPACK.price,
@@ -114,7 +127,9 @@ test.describe('Checkout Process @checkout', () => {
       );
     });
 
-    test('validate total price for added products @positive', async ({ checkoutStepTwoPage }) => {
+    test('validate total price for added products @positive', async ({
+      checkoutStepTwoPage,
+    }) => {
       const productPrices = [SAUCE_LABS_BACKPACK.price];
       const expectedTotal =
         await checkoutStepTwoPage.calculateExpectedTotal(productPrices);
@@ -123,7 +138,10 @@ test.describe('Checkout Process @checkout', () => {
       expect(actualTotal).toBe(expectedTotal);
     });
 
-    test('cancel button navigates back to inventory page @positive', async ({ checkoutStepTwoPage, inventoryPage }) => {
+    test('cancel button navigates back to inventory page @positive', async ({
+      checkoutStepTwoPage,
+      inventoryPage,
+    }) => {
       await expect(checkoutStepTwoPage.cancelButton).toBeVisible();
       await expect(checkoutStepTwoPage.cancelButton).toBeEnabled();
       await checkoutStepTwoPage.cancelButton.click();

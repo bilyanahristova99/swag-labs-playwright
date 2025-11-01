@@ -1,6 +1,6 @@
 import { Locator, Page, expect } from '@playwright/test';
-import BasePage from './BasePage';
-import ILoginPage from '../interfaces/ILoginPage';
+import BasePage from '../BasePage';
+import ILoginPage from '../../interfaces/ILoginPage';
 
 export default class LoginPage extends BasePage implements ILoginPage {
   constructor(page: Page) {

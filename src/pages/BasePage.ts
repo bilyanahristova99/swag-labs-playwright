@@ -1,4 +1,4 @@
-import { expect, Page, Locator } from '@playwright/test';
+import { Page } from '@playwright/test';
 import IPage from '../interfaces/IPage';
 
 export default class BasePage implements IPage {

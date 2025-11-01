@@ -1,8 +1,8 @@
 import { Page, expect, Locator } from '@playwright/test';
-import BasePage from './BasePage';
-import { ButtonSelectors } from '../constants/selectors/shared';
-import { InventorySelectors } from '../constants/selectors/shared';
-import { CartSelectors } from '../constants/selectors/shared';
+import BasePage from '../BasePage';
+import { ButtonSelectors } from '../../constants/selectors/shared';
+import { InventorySelectors } from '../../constants/selectors/shared';
+import { CartSelectors } from '../../constants/selectors/shared';
 
 export default class CartPage extends BasePage {
   constructor(page: Page) {

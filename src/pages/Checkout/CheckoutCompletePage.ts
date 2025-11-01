@@ -8,4 +8,6 @@ export class CheckoutCompletePage extends BasePage {
   async assertLoaded(): Promise<void> {
     await expect(this.page.locator('.complete-header')).toBeVisible();
   }
+
+  // TODO: Add locators for the checkout complete page - back home button (if such, but as far as I remember there is no such button), text with order confirmation
 }

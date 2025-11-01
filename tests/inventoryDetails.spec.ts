@@ -9,7 +9,9 @@ test.describe('Product Detail Page @detail', () => {
     await inventoryDetailsPage.assertLoaded();
   });
 
-  test('product detail page shows correct information @positive', async ({ inventoryDetailsPage }) => {
+  test('product detail page shows correct information @positive', async ({
+    inventoryDetailsPage,
+  }) => {
     await inventoryDetailsPage.assertProductDetails(
       SAUCE_LABS_BACKPACK.name,
       SAUCE_LABS_BACKPACK.price,
@@ -19,14 +21,18 @@ test.describe('Product Detail Page @detail', () => {
     await inventoryDetailsPage.assertProductImage();
   });
 
-  test('add product to cart from detail page @positive', async ({ inventoryDetailsPage }) => {
+  test('add product to cart from detail page @positive', async ({
+    inventoryDetailsPage,
+  }) => {
     await inventoryDetailsPage.assertCartItemCount(0);
     await expect(inventoryDetailsPage.addToCartButton).toBeVisible();
     await inventoryDetailsPage.addToCartButton.click();
     await inventoryDetailsPage.assertCartItemCount(1);
   });
 
-  test('remove product from cart on detail page @positive', async ({ inventoryDetailsPage }) => {
+  test('remove product from cart on detail page @positive', async ({
+    inventoryDetailsPage,
+  }) => {
     await expect(inventoryDetailsPage.addToCartButton).toBeVisible();
     await inventoryDetailsPage.addToCartButton.click();
     await inventoryDetailsPage.assertCartItemCount(1);
@@ -36,13 +42,19 @@ test.describe('Product Detail Page @detail', () => {
     await inventoryDetailsPage.assertCartItemCount(0);
   });
 
-  test('navigate back to inventory from detail page @positive', async ({ inventoryPage, inventoryDetailsPage }) => {
+  test('navigate back to inventory from detail page @positive', async ({
+    inventoryPage,
+    inventoryDetailsPage,
+  }) => {
     await expect(inventoryDetailsPage.backButton).toBeVisible();
     await inventoryDetailsPage.backButton.click();
     await inventoryPage.assertLoaded();
   });
 
-  test('navigate to cart from detail page @positive', async ({ cartPage, inventoryDetailsPage }) => {
+  test('navigate to cart from detail page @positive', async ({
+    cartPage,
+    inventoryDetailsPage,
+  }) => {
     await expect(inventoryDetailsPage.addToCartButton).toBeVisible();
     await inventoryDetailsPage.addToCartButton.click();
     await expect(inventoryDetailsPage.cartLink).toBeVisible();

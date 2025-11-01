@@ -1,5 +1,5 @@
 import { test, expect } from '@playwright/test';
-import LoginPage from '../src/pages/LoginPage';
+import LoginPage from '../src/pages/Login/LoginPage';
 import {
   STANDARD_USER,
   LOCKED_OUT_USER,

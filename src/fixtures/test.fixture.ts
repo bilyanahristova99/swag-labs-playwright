@@ -1,9 +1,10 @@
 import { test as base } from '@playwright/test';
-import LoginPage from '../pages/LoginPage';
+import LoginPage from '../pages/Login/LoginPage';
 import InventoryPage from '../pages/Inventory/InventoryPage';
-import CartPage from '../pages/CartPage';
+import CartPage from '../pages/Cart/CartPage';
 import { CheckoutStepOnePage } from '../pages/Checkout/CheckoutStepOnePage';
 import { CheckoutStepTwoPage } from '../pages/Checkout/CheckoutStepTwoPage';
+import { CheckoutCompletePage } from '../pages/Checkout/CheckoutCompletePage';
 import { STANDARD_USER } from '../constants/users';
 import { SAUCE_LABS_BACKPACK } from '../constants/products';
 import checkoutData from '../constants/checkoutData';
@@ -16,6 +17,7 @@ export type PageObjects = {
   cartPage: CartPage;
   checkoutStepOnePage: CheckoutStepOnePage;
   checkoutStepTwoPage: CheckoutStepTwoPage;
+  checkoutCompletePage: CheckoutCompletePage;
 };
 
 export type FlowFixtures = {
@@ -43,6 +45,9 @@ export const test = base.extend<PageObjects & FlowFixtures>({
   },
   checkoutStepTwoPage: async ({ page }, use) => {
     await use(new CheckoutStepTwoPage(page));
+  },
+  checkoutCompletePage: async ({ page }, use) => {
+    await use(new CheckoutCompletePage(page));
   },
 
   // Flows

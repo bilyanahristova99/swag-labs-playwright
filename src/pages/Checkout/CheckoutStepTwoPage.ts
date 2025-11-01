@@ -19,16 +19,12 @@ export class CheckoutStepTwoPage extends BasePage {
     return this.page.locator(CartSelectors.CART_ITEM);
   }
 
-  private get summarySubtotal(): Locator {
-    return this.page.locator('.summary_subtotal_label');
-  }
-
-  private get summaryTax(): Locator {
-    return this.page.locator('.summary_tax_label');
-  }
-
   private get summaryTotal(): Locator {
     return this.page.locator('.summary_total_label');
+  }
+
+  public get finishButton(): Locator {
+    return this.page.getByRole('button', { name: 'FINISH' });
   }
 
   public getCartItemByName(productName: string): Locator {

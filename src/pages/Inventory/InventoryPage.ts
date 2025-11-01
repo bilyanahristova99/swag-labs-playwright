@@ -1,26 +1,11 @@
-import { Page, expect, Locator } from '@playwright/test';
-import BasePage from '../BasePage';
+import { expect, Locator } from '@playwright/test';
 import { FILTER_OPTIONS } from '../../constants/enums';
-import {
-  CartSelectors,
-  InventorySelectors,
-} from '../../constants/selectors/shared';
+import { InventorySelectors } from '../../constants/selectors/shared';
+import InventoryBasePage from './IventoryBasePage';
 
-export default class InventoryPage extends BasePage {
-  constructor(page: Page) {
-    super(page, 'inventory.html');
-  }
-
+export default class InventoryPage extends InventoryBasePage {
   private get inventoryContainer(): Locator {
     return this.page.locator('.inventory_list');
-  }
-
-  public get cartBadge(): Locator {
-    return this.page.locator(CartSelectors.CART_BADGE);
-  }
-
-  public get cartLink(): Locator {
-    return this.page.locator(CartSelectors.CART_LINK);
   }
 
   public get sortDropdown(): Locator {
