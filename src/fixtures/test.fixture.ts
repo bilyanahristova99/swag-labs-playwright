@@ -19,9 +19,9 @@ export type PageObjects = {
 };
 
 export type FlowFixtures = {
-  loggedIn: void;
-  checkoutStepOneReady: void;
-  checkoutStepTwoReady: void;
+  loggedIn: () => Promise<void>;
+  checkoutStepOneReady: () => Promise<void>;
+  checkoutStepTwoReady: () => Promise<void>;
 };
 
 export const test = base.extend<PageObjects & FlowFixtures>({
@@ -46,43 +46,43 @@ export const test = base.extend<PageObjects & FlowFixtures>({
   },
 
   // Flows
-  loggedIn: [
-    async ({ loginPage, inventoryPage }, use) => {
+  loggedIn: async ({ loginPage, inventoryPage }, use) => {
+    await use(async () => {
       await loginPage.login(STANDARD_USER.username, STANDARD_USER.password);
       await loginPage.verifyAuthenticationSuccess();
       await inventoryPage.assertLoaded();
-      await use();
-    },
-    { auto: true }, // auto-run for suites that import this test
-  ],
+    });
+  },
 
   checkoutStepOneReady: async (
-    { inventoryPage, cartPage, checkoutStepOnePage },
+    { loggedIn, inventoryPage, cartPage, checkoutStepOnePage },
     use
   ) => {
-    await inventoryPage.addProductToCart(SAUCE_LABS_BACKPACK.name);
-    await inventoryPage.assertCartItemCount(1);
-    await cartPage.goto();
-    await cartPage.assertLoaded();
-    await cartPage.checkoutButton.click();
-    await checkoutStepOnePage.assertLoaded();
-    await use();
+    await use(async () => {
+      await loggedIn();
+      await inventoryPage.addProductToCart(SAUCE_LABS_BACKPACK.name);
+      await inventoryPage.assertCartItemCount(1);
+      await cartPage.goto();
+      await cartPage.assertLoaded();
+      await cartPage.checkoutButton.click();
+      await checkoutStepOnePage.assertLoaded();
+    });
   },
 
   checkoutStepTwoReady: async (
     { checkoutStepOneReady, checkoutStepOnePage, checkoutStepTwoPage },
     use
   ) => {
-    // depends on checkoutStepOneReady having prepared the state
-    void checkoutStepOneReady; // ensure fixture is initialized
-    await checkoutStepOnePage.fillCheckoutForm(
-      checkoutData.firstName,
-      checkoutData.lastName,
-      checkoutData.postalCode
-    );
-    await checkoutStepOnePage.continueButton.click();
-    await checkoutStepTwoPage.assertLoaded();
-    await use();
+    await use(async () => {
+      await checkoutStepOneReady();
+      await checkoutStepOnePage.fillCheckoutForm(
+        checkoutData.firstName,
+        checkoutData.lastName,
+        checkoutData.postalCode
+      );
+      await checkoutStepOnePage.continueButton.click();
+      await checkoutStepTwoPage.assertLoaded();
+    });
   },
 });
 

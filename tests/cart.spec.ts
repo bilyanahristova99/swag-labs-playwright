@@ -5,8 +5,8 @@ import {
 } from '../src/constants/products';
 
 test.describe('Cart Page @cart', () => {
-  test.beforeEach(async ({ inventoryPage, cartPage }) => {
-    // loggedIn runs automatically via fixtures
+  test.beforeEach(async ({ loggedIn, inventoryPage, cartPage }) => {
+    await loggedIn();
     await inventoryPage.addProductToCart(SAUCE_LABS_BACKPACK.name);
     await inventoryPage.addProductToCart(SAUCE_LABS_BIKE_LIGHT.name);
     await inventoryPage.assertCartItemCount(2);

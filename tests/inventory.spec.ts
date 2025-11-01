@@ -7,8 +7,8 @@ import {
 } from '../src/constants/products';
 
 test.describe('Inventory Page @inventory', () => {
-  test.beforeEach(async ({ inventoryPage }) => {
-    // loggedIn is auto-applied via fixtures; ensure page loaded
+  test.beforeEach(async ({ loggedIn, inventoryPage }) => {
+    await loggedIn();
     await inventoryPage.assertLoaded();
   });
 

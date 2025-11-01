@@ -11,7 +11,7 @@ test.describe('Checkout Process @checkout', () => {
 
     test.beforeEach(async ({ checkoutStepOneReady }) => {
       // Prepares: logged in, item added, at checkout step one
-      void checkoutStepOneReady;
+      await checkoutStepOneReady();
     });
 
     test('fill valid checkout data and continue button is actionable @positive', async ({ checkoutStepTwoPage, checkoutStepOnePage }) => {
@@ -103,7 +103,7 @@ test.describe('Checkout Process @checkout', () => {
   test.describe('Checkout Step Two Page @checkout', () => {
     test.beforeEach(async ({ checkoutStepTwoReady }) => {
       // Prepares: logged in, item added, step one filled, at step two
-      void checkoutStepTwoReady;
+      await checkoutStepTwoReady();
     });
 
     test('validate product details for added products @positive', async ({ checkoutStepTwoPage }) => {

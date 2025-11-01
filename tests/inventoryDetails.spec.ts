@@ -2,8 +2,8 @@ import { test, expect } from '../src/fixtures/test.fixture';
 import { SAUCE_LABS_BACKPACK } from '../src/constants/products';
 
 test.describe('Product Detail Page @detail', () => {
-  test.beforeEach(async ({ inventoryPage, inventoryDetailsPage }) => {
-    // loggedIn auto-applied; navigate to details
+  test.beforeEach(async ({ loggedIn, inventoryPage, inventoryDetailsPage }) => {
+    await loggedIn();
     await inventoryPage.assertLoaded();
     await inventoryPage.goToProductDetail(SAUCE_LABS_BACKPACK.name);
     await inventoryDetailsPage.assertLoaded();
