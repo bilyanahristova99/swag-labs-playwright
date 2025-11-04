@@ -20,7 +20,7 @@ export default class InventoryDetailsPage extends BasePage {
   }
 
   private get productImage(): Locator {
-    return this.page.getByRole('img');
+    return this.page.locator('.inventory_details_img');
   }
 
   public get addToCartButton(): Locator {
