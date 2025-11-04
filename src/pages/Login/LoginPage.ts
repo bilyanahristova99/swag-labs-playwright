@@ -25,9 +25,7 @@ export default class LoginPage extends BasePage implements ILoginPage {
 
   public async login(username: string, password: string): Promise<void> {
     await this.goto();
-    await expect(this.page).toHaveURL(
-      'https://www.saucedemo.com/v1/index.html'
-    );
+    await expect(this.page).toHaveURL('https://www.saucedemo.com');
 
     await this.usernameInput.fill(username);
     await this.passwordInput.fill(password);
@@ -36,6 +34,6 @@ export default class LoginPage extends BasePage implements ILoginPage {
   }
 
   public async verifyAuthenticationSuccess(): Promise<void> {
-    await this.page.waitForURL('https://www.saucedemo.com/v1/inventory.html');
+    await this.page.waitForURL('https://www.saucedemo.com/inventory.html');
   }
 }

@@ -67,7 +67,7 @@ export const test = base.extend<PageObjects & FlowFixtures>({
       await loggedIn();
       await inventoryPage.addProductToCart(SAUCE_LABS_BACKPACK.name);
       await inventoryPage.assertCartItemCount(1);
-      await cartPage.goto();
+      await inventoryPage.cartLink.click();
       await cartPage.assertLoaded();
       await cartPage.checkoutButton.click();
       await checkoutStepOnePage.assertLoaded();

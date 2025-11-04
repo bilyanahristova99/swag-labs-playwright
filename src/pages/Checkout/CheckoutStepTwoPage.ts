@@ -24,7 +24,7 @@ export class CheckoutStepTwoPage extends BasePage {
   }
 
   public get finishButton(): Locator {
-    return this.page.getByRole('button', { name: 'FINISH' });
+    return this.page.getByRole('button', { name: 'Finish' });
   }
 
   public getCartItemByName(productName: string): Locator {

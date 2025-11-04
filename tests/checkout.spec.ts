@@ -148,5 +148,15 @@ test.describe('Checkout Process @checkout', () => {
       await inventoryPage.assertLoaded();
       await inventoryPage.assertCartItemCount(1);
     });
+
+    test('finish button navigates to checkout complete page @positive', async ({
+      checkoutStepTwoPage,
+      checkoutCompletePage,
+    }) => {
+      await expect(checkoutStepTwoPage.finishButton).toBeVisible();
+      await expect(checkoutStepTwoPage.finishButton).toBeEnabled();
+      await checkoutStepTwoPage.finishButton.click();
+      await checkoutCompletePage.assertLoaded();
+    });
   });
 });

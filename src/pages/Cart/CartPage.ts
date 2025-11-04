@@ -1,14 +1,10 @@
 import { Page, expect, Locator } from '@playwright/test';
-import BasePage from '../BasePage';
 import { ButtonSelectors } from '../../constants/selectors/shared';
 import { InventorySelectors } from '../../constants/selectors/shared';
 import { CartSelectors } from '../../constants/selectors/shared';
+import InventoryBasePage from '../Inventory/IventoryBasePage';
 
-export default class CartPage extends BasePage {
-  constructor(page: Page) {
-    super(page, 'cart.html');
-  }
-
+export default class CartPage extends InventoryBasePage {
   private get cartList(): Locator {
     return this.page.locator('.cart_list');
   }

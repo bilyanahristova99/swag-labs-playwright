@@ -10,7 +10,7 @@ test.describe('Cart Page @cart', () => {
     await inventoryPage.addProductToCart(SAUCE_LABS_BACKPACK.name);
     await inventoryPage.addProductToCart(SAUCE_LABS_BIKE_LIGHT.name);
     await inventoryPage.assertCartItemCount(2);
-    await cartPage.goto();
+    await inventoryPage.cartLink.click();
     await cartPage.assertLoaded();
   });
 
