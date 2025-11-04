@@ -1,12 +1,7 @@
-import { Page, expect, Locator } from '@playwright/test';
-import BasePage from '../BasePage';
-import { CartSelectors } from '../../constants/selectors/shared';
+import { expect, Locator } from '@playwright/test';
+import InventoryBasePage from './IventoryBasePage';
 
-export default class InventoryDetailsPage extends BasePage {
-  constructor(page: Page) {
-    super(page, 'inventory-item.html');
-  }
-
+export default class InventoryDetailsPage extends InventoryBasePage {
   private get productName(): Locator {
     return this.page.locator('.inventory_details_name');
   }
@@ -33,14 +28,6 @@ export default class InventoryDetailsPage extends BasePage {
 
   public get backButton(): Locator {
     return this.page.getByRole('button', { name: 'Back' });
-  }
-
-  private get cartBadge(): Locator {
-    return this.page.locator(CartSelectors.CART_BADGE);
-  }
-
-  public get cartLink(): Locator {
-    return this.page.locator(CartSelectors.CART_LINK);
   }
 
   public async assertLoaded(): Promise<void> {
