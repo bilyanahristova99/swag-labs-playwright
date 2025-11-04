@@ -11,6 +11,7 @@
     "test:checkout": "playwright test --grep @checkout",
     "test:cart": "playwright test --grep @cart",
     "test:inventory-details": "playwright test --grep @detail",
+    "test:smoke": "playwright test --grep @smoke",
     "test:positive": "playwright test --grep @positive",
     "test:negative": "playwright test --grep @negative",
     "test:install": "playwright install",
