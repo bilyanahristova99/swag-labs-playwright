@@ -1,11 +1,30 @@
 name: Playwright Tests for Swag Labs
 
 on:
-  workflow_dispatch: # Allows you to manually trigger the workflow
+  push:
+    branches:
+      - main
+  workflow_dispatch: # Allows us to manually trigger the workflow from the GitHub Actions UI
 
 jobs:
-  run-playwright-tests:
+  test:
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - suite: login
+            command: test:login
+          - suite: inventory
+            command: test:inventory
+          - suite: cart
+            command: test:cart
+          - suite: checkout
+            command: test:checkout
+          - suite: inventory-details
+            command: test:inventory-details
+          - suite: smoke
+            command: test:smoke
 
     steps:
       - name: Checkout code
@@ -22,14 +41,13 @@ jobs:
       - name: Install Playwright Browsers
         run: yarn exec playwright install --with-deps
 
-      - name: Run Playwright tests
-        id: run-playwright-tests
-        run: yarn test
+      - name: Run ${{ matrix.suite }} tests
+        run: yarn ${{ matrix.command }}
 
       - name: Upload Playwright Report
         uses: actions/upload-artifact@v4
-        if: ${{ steps.run-playwright-tests.conclusion == 'failure' && !cancelled() }}
+        if: failure()
         with:
-          name: playwright-report
+          name: playwright-report-${{ matrix.suite }}
           path: playwright-report
-          retention-days: 1
+          retention-days: 3
