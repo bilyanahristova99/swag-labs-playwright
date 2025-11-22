@@ -9,7 +9,7 @@ test.describe('Product Detail Page @detail', () => {
     await inventoryDetailsPage.assertLoaded();
   });
 
-  test('product detail page shows correct information @positive', async ({
+  test('should display correct product information including name, price, description and image @positive', async ({
     inventoryDetailsPage,
   }) => {
     await inventoryDetailsPage.assertProductDetails(
@@ -21,7 +21,7 @@ test.describe('Product Detail Page @detail', () => {
     await inventoryDetailsPage.assertProductImage();
   });
 
-  test('add product to cart from detail page @positive', async ({
+  test('should add product to cart from detail page and update cart badge @positive', async ({
     inventoryDetailsPage,
   }) => {
     await inventoryDetailsPage.assertCartItemCount(0);
@@ -30,7 +30,7 @@ test.describe('Product Detail Page @detail', () => {
     await inventoryDetailsPage.assertCartItemCount(1);
   });
 
-  test('remove product from cart on detail page @positive', async ({
+  test('should remove product from cart on detail page and update cart badge @positive', async ({
     inventoryDetailsPage,
   }) => {
     await expect(inventoryDetailsPage.addToCartButton).toBeVisible();
@@ -42,7 +42,7 @@ test.describe('Product Detail Page @detail', () => {
     await inventoryDetailsPage.assertCartItemCount(0);
   });
 
-  test('navigate back to inventory from detail page @positive', async ({
+  test('should navigate back to inventory page when back button is clicked @positive', async ({
     inventoryPage,
     inventoryDetailsPage,
   }) => {
@@ -51,7 +51,7 @@ test.describe('Product Detail Page @detail', () => {
     await inventoryPage.assertLoaded();
   });
 
-  test('navigate to cart from detail page @positive', async ({
+  test('should navigate to cart page when cart link is clicked @positive', async ({
     cartPage,
     inventoryDetailsPage,
   }) => {

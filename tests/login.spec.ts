@@ -9,7 +9,7 @@ import {
 test.describe('Login Page @login', () => {
   let loginPage: LoginPage;
 
-  const emeptyUsernameError = 'Epic sadface: Username is required';
+  const emptyUsernameError = 'Epic sadface: Username is required';
   const emptyPasswordError = 'Epic sadface: Password is required';
   const wrongCredentialsError =
     'Epic sadface: Username and password do not match any user in this service';
@@ -24,7 +24,7 @@ test.describe('Login Page @login', () => {
     await page.close();
   });
 
-  test('valid login with standard user @positive', async () => {
+  test('should successfully login with valid standard user credentials @positive', async () => {
     await expect(loginPage.usernameInput).toBeVisible();
     await loginPage.usernameInput.fill(STANDARD_USER.username);
     await expect(loginPage.passwordInput).toBeVisible();
@@ -34,7 +34,7 @@ test.describe('Login Page @login', () => {
     await loginPage.verifyAuthenticationSuccess();
   });
 
-  test('performance glitch user can login @positive', async () => {
+  test('should successfully login with performance glitch user credentials @positive', async () => {
     await expect(loginPage.usernameInput).toBeVisible();
     await loginPage.usernameInput.fill(PERFORMANCE_GLITCH_USER.username);
     await expect(loginPage.passwordInput).toBeVisible();
@@ -44,16 +44,16 @@ test.describe('Login Page @login', () => {
     await loginPage.verifyAuthenticationSuccess();
   });
 
-  test('empty username shows error @negative', async () => {
+  test('should display error message when username is empty @negative', async () => {
     await expect(loginPage.usernameInput).toBeVisible();
     await loginPage.passwordInput.fill(STANDARD_USER.password);
     await expect(loginPage.loginButton).toBeVisible();
     await loginPage.loginButton.click();
     await expect(loginPage.errorSection).toBeVisible();
-    await expect(loginPage.errorSection).toHaveText(emeptyUsernameError);
+    await expect(loginPage.errorSection).toHaveText(emptyUsernameError);
   });
 
-  test('empty password shows error @negative', async () => {
+  test('should display error message when password is empty @negative', async () => {
     await expect(loginPage.usernameInput).toBeVisible();
     await loginPage.usernameInput.fill(STANDARD_USER.username);
     await expect(loginPage.loginButton).toBeVisible();
@@ -62,7 +62,7 @@ test.describe('Login Page @login', () => {
     await expect(loginPage.errorSection).toHaveText(emptyPasswordError);
   });
 
-  test('valid username but wrong password shows error @negative', async () => {
+  test('should display error message when password is incorrect @negative', async () => {
     await expect(loginPage.usernameInput).toBeVisible();
     await loginPage.usernameInput.fill(STANDARD_USER.username);
     await expect(loginPage.passwordInput).toBeVisible();
@@ -73,7 +73,7 @@ test.describe('Login Page @login', () => {
     await expect(loginPage.errorSection).toHaveText(wrongCredentialsError);
   });
 
-  test('locked out user sees error @negative', async () => {
+  test('should display error message when user account is locked out @negative', async () => {
     await expect(loginPage.usernameInput).toBeVisible();
     await loginPage.usernameInput.fill(LOCKED_OUT_USER.username);
     await expect(loginPage.passwordInput).toBeVisible();

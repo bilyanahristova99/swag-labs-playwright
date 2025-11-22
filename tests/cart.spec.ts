@@ -14,7 +14,7 @@ test.describe('Cart Page @cart', () => {
     await cartPage.assertLoaded();
   });
 
-  test('validate product details for both products @positive', async ({
+  test('should display correct product details for all products in cart @positive', async ({
     cartPage,
   }) => {
     await cartPage.assertProductDetails(
@@ -32,7 +32,9 @@ test.describe('Cart Page @cart', () => {
     );
   });
 
-  test('remove one of the two products @positive', async ({ cartPage }) => {
+  test('should remove individual product from cart when remove button is clicked @positive', async ({
+    cartPage,
+  }) => {
     await cartPage.removeProduct(SAUCE_LABS_BIKE_LIGHT.name);
     await expect(cartPage.cartItem).toHaveCount(1);
     await expect(
@@ -43,7 +45,7 @@ test.describe('Cart Page @cart', () => {
     ).toBeVisible();
   });
 
-  test('click continue shopping button @positive', async ({
+  test('should navigate to inventory page when continue shopping button is clicked @positive', async ({
     cartPage,
     inventoryPage,
   }) => {
@@ -52,7 +54,9 @@ test.describe('Cart Page @cart', () => {
     await inventoryPage.assertLoaded();
   });
 
-  test('remove all products from cart @positive', async ({ cartPage }) => {
+  test('should remove all products from cart when all remove buttons are clicked @positive', async ({
+    cartPage,
+  }) => {
     await cartPage.removeProduct(SAUCE_LABS_BACKPACK.name);
     await cartPage.removeProduct(SAUCE_LABS_BIKE_LIGHT.name);
     await expect(cartPage.cartItem).toHaveCount(0);
@@ -64,7 +68,7 @@ test.describe('Cart Page @cart', () => {
     ).not.toBeVisible();
   });
 
-  test('checkout button should be disabled if cart is empty @negative', async ({
+  test('should disable checkout button when cart is empty @negative', async ({
     cartPage,
   }) => {
     await cartPage.removeProduct(SAUCE_LABS_BACKPACK.name);

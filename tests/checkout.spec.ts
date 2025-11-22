@@ -13,7 +13,7 @@ test.describe('Checkout Process @checkout', () => {
       await checkoutStepOneReady();
     });
 
-    test('fill valid checkout data and continue button is actionable @positive', async ({
+    test('should navigate to checkout step two when valid checkout data is submitted @positive', async ({
       checkoutStepTwoPage,
       checkoutStepOnePage,
     }) => {
@@ -33,7 +33,7 @@ test.describe('Checkout Process @checkout', () => {
       await checkoutStepTwoPage.assertLoaded();
     });
 
-    test('show error when firstName is missing @negative', async ({
+    test('should display error message when first name is missing @negative', async ({
       checkoutStepOnePage,
     }) => {
       await expect(checkoutStepOnePage.firstNameInput).toBeVisible();
@@ -55,7 +55,7 @@ test.describe('Checkout Process @checkout', () => {
       );
     });
 
-    test('show error when lastName is missing @negative', async ({
+    test('should display error message when last name is missing @negative', async ({
       checkoutStepOnePage,
     }) => {
       await expect(checkoutStepOnePage.firstNameInput).toBeVisible();
@@ -77,7 +77,7 @@ test.describe('Checkout Process @checkout', () => {
       );
     });
 
-    test('show error when postalCode is missing @negative', async ({
+    test('should display error message when postal code is missing @negative', async ({
       checkoutStepOnePage,
     }) => {
       await expect(checkoutStepOnePage.firstNameInput).toBeVisible();
@@ -100,7 +100,7 @@ test.describe('Checkout Process @checkout', () => {
       );
     });
 
-    test('cancel button navigates back to cart @positive', async ({
+    test('should navigate back to cart when cancel button is clicked @positive', async ({
       checkoutStepOnePage,
       cartPage,
     }) => {
@@ -117,7 +117,7 @@ test.describe('Checkout Process @checkout', () => {
       await checkoutStepTwoReady();
     });
 
-    test('validate product details for added products @positive', async ({
+    test('should display correct product details for items in checkout summary @positive', async ({
       checkoutStepTwoPage,
     }) => {
       await checkoutStepTwoPage.assertProductDetails(
@@ -127,7 +127,7 @@ test.describe('Checkout Process @checkout', () => {
       );
     });
 
-    test('validate total price for added products @positive', async ({
+    test('should calculate and display correct total price including tax @positive', async ({
       checkoutStepTwoPage,
     }) => {
       const productPrices = [SAUCE_LABS_BACKPACK.price];
@@ -138,7 +138,7 @@ test.describe('Checkout Process @checkout', () => {
       expect(actualTotal).toBe(expectedTotal);
     });
 
-    test('cancel button navigates back to inventory page @positive', async ({
+    test('should navigate back to inventory page when cancel button is clicked @positive', async ({
       checkoutStepTwoPage,
       inventoryPage,
     }) => {
@@ -149,7 +149,7 @@ test.describe('Checkout Process @checkout', () => {
       await inventoryPage.assertCartItemCount(1);
     });
 
-    test('finish button navigates to checkout complete page @positive', async ({
+    test('should navigate to checkout complete page when finish button is clicked @positive', async ({
       checkoutStepTwoPage,
       checkoutCompletePage,
     }) => {

@@ -12,7 +12,7 @@ test.describe('Smoke E2E Flows @smoke', () => {
     await page.close();
   });
 
-  test('login, add products to cart, checkout, logout', async ({
+  test('should complete full checkout flow: login, add products, checkout, and logout @smoke', async ({
     loginPage,
     inventoryPage,
     cartPage,
@@ -48,7 +48,7 @@ test.describe('Smoke E2E Flows @smoke', () => {
     await expect(loginPage.usernameInput).toBeVisible();
   });
 
-  test('login, add product from details page, checkout, logout', async ({
+  test('should complete checkout flow with product added from detail page @smoke', async ({
     loginPage,
     inventoryPage,
     inventoryDetailsPage,
@@ -85,7 +85,7 @@ test.describe('Smoke E2E Flows @smoke', () => {
     await expect(loginPage.usernameInput).toBeVisible();
   });
 
-  test('login, add products, remove products, navigate back and forth', async ({
+  test('should handle product management flow: add, remove, and navigate between pages @smoke', async ({
     loginPage,
     inventoryPage,
     inventoryDetailsPage,
