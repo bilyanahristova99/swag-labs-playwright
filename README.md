@@ -31,15 +31,26 @@ yarn test:negative        # Error handling tests
 
 ## Project Structure 📁
 
-```
+```text
 src/
-  pages/              # Page Object classes
+  constants/          # Test data, product information, enums, and selectors
+  fixtures/           # Page object fixtures and reusable application states
+  interfaces/         # Shared TypeScript page contracts
+  pages/              # Page Object Model classes grouped by feature
     BasePage.ts
-    Login/, Inventory/, Cart/, Checkout/
-  interfaces/         # TypeScript page contracts
-  constants/          # Users, products, selectors, enums
-  fixtures/           # Reusable test setup
-tests/                # Test specifications
+    Login/
+    Inventory/
+    Cart/
+    Checkout/
+  utils/              # Reusable domain-specific assertion helpers
+
+tests/
+  login.spec.ts
+  inventory.spec.ts
+  inventoryDetails.spec.ts
+  cart.spec.ts
+  checkout.spec.ts
+  smoke-e2e.spec.ts
 ```
 
 Base URL: `https://www.saucedemo.com/` (configured in `playwright.config.ts`). Reports are generated in `playwright-report/` after each run.
@@ -87,20 +98,70 @@ I follow the **Page Object Model** pattern with TypeScript interfaces defining p
 - Covers navigation between pages, adding/removing products, and complete checkout flows
 - Fast and stable, perfect for PR runs
 
+### Fixtures & Test State 🧩
+
+The suite uses custom Playwright fixtures to provide page objects and reusable application states.
+
+**Page object fixtures**
+
+- Create page objects using Playwright's test-scoped `page`
+- Are initialized only when requested by a test
+- Share the same isolated browser context within each test
+
+**State fixtures**
+
+- `authenticatedPage` - Logs in with the standard user and provides a ready inventory page
+- `checkoutStepOneReady` - Adds the default product and opens checkout step one
+- `checkoutStepTwoReady` - Completes the customer information form and opens checkout step two
+
+State fixtures are composed through dependencies:
+
+```text
+authenticatedPage
+        ↓
+checkoutStepOneReady
+        ↓
+checkoutStepTwoReady
+```
+
+Each test receives a fresh browser context, so cart contents, authentication, and application state are not shared between tests.
+
+### Execution Strategy ⚙️
+
+Tests run fully in parallel locally for faster feedback. Playwright automatically selects the available worker count.
+
+In CI:
+
+- Tests are split into feature-based jobs
+- Each job uses one Playwright worker
+- Failed tests are retried once
+- Traces are collected on the first retry
+- Screenshots and videos are retained for failures
+- The HTML report is generated without opening automatically
+
+The application uses `data-test` attributes as Playwright test IDs, configured globally in `playwright.config.ts`:
+
+```ts
+testIdAttribute: 'data-test';
+```
+
+This keeps locators stable and independent from visual CSS changes.
+
 ## Potential Improvements 💡
 
-- **Centralized assertion helpers**: Extract repeated `expect(...).toBeVisible()` patterns into reusable helpers (e.g., `assertElementsVisible()`)
-- **Shared product details assertions**: The `assertProductDetails()` pattern appears in multiple page classes with similar logic - could be extracted to a utility
-- **Assertion utilities**: Create shared helpers for common patterns (product images, cart badges, form fields)
+- **Parameterized checkout flows**: Support different products and customer profiles without duplicating setup
+- **Data-driven tests**: Generate related validation scenarios from typed datasets
+- **Multi-browser coverage**: Add Firefox and WebKit projects when broader compatibility testing is needed
 
 These are nice-to-haves for better maintainability as the codebase scales.
 
 ## Developer Helpers 🛠️
 
 ```bash
-yarn format              # Format code with Prettier
-yarn format:check        # Check formatting
-yarn clean:install       # Clean install
+yarn type-check          # Run TypeScript validation
+yarn format              # Format the project with Prettier
+yarn format:check        # Verify formatting without modifying files
+yarn clean:install       # Reinstall dependencies from a clean state
 ```
 
 Prettier + Husky with lint-staged ensure code is formatted before commits. Type checking runs automatically on pre-commit.
