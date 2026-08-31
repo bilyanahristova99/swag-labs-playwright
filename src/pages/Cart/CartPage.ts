@@ -1,32 +1,34 @@
-import { Page, expect, Locator } from '@playwright/test';
-import { ButtonSelectors } from '../../constants/selectors/shared';
-import { InventorySelectors } from '../../constants/selectors/shared';
-import { CartSelectors } from '../../constants/selectors/shared';
-import InventoryBasePage from '../Inventory/IventoryBasePage';
+import { Page, Locator } from '@playwright/test';
+import InventoryBasePage from '../Inventory/InventoryBasePage';
+import {
+  assertProductDetailsWithQuantity,
+  CART_PRODUCT_SELECTORS,
+} from '../../utils/productAssertions';
+import { assertElementsVisible } from '../../utils/assertions';
 
 export default class CartPage extends InventoryBasePage {
-  private get cartList(): Locator {
-    return this.page.locator('.cart_list');
+  constructor(page: Page) {
+    super(page, 'cart.html');
   }
 
-  private get cartFooter(): Locator {
-    return this.page.locator('.cart_footer');
+  private get cartList(): Locator {
+    return this.page.getByTestId('cart-list');
   }
 
   public get cartItem(): Locator {
-    return this.page.locator(CartSelectors.CART_ITEM);
+    return this.page.getByTestId('inventory-item');
   }
 
   public get continueShoppingButton(): Locator {
-    return this.cartFooter.locator(ButtonSelectors.BUTTON_SECONDARY);
+    return this.page.getByTestId('continue-shopping');
   }
 
   public get checkoutButton(): Locator {
-    return this.cartFooter.locator(ButtonSelectors.BUTTON_ACTION);
+    return this.page.getByTestId('checkout');
   }
 
   public async assertLoaded(): Promise<void> {
-    await expect(this.cartList).toBeVisible();
+    await assertElementsVisible([this.cartList]);
   }
 
   public getCartItemByName(productName: string): Locator {
@@ -40,27 +42,19 @@ export default class CartPage extends InventoryBasePage {
     expectedQuantity: number = 1
   ): Promise<void> {
     const item = this.getCartItemByName(productName);
-    await expect(item).toBeVisible();
-
-    await expect(
-      item.locator(InventorySelectors.INVENTORY_ITEM_NAME)
-    ).toHaveText(productName);
-    await expect(
-      item.locator(InventorySelectors.INVENTORY_ITEM_PRICE)
-    ).toHaveText(expectedPrice);
-    await expect(
-      item.locator(InventorySelectors.INVENTORY_ITEM_DESCRIPTION)
-    ).toHaveText(expectedDescription);
-    await expect(item.locator('.cart_quantity')).toHaveText(
-      expectedQuantity.toString()
+    await assertProductDetailsWithQuantity(
+      item,
+      productName,
+      expectedPrice,
+      expectedDescription,
+      expectedQuantity,
+      CART_PRODUCT_SELECTORS
     );
   }
 
   public async removeProduct(productName: string): Promise<void> {
     const item = this.getCartItemByName(productName);
-    const removeButton = item
-      .locator(ButtonSelectors.BUTTON_SECONDARY)
-      .filter({ hasText: 'Remove' });
+    const removeButton = item.getByRole('button', { name: 'Remove' });
     await removeButton.click();
   }
 }

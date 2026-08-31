@@ -16,12 +16,12 @@ export const SAUCE_LABS_BOLT_T_SHIRT = {
   name: 'Sauce Labs Bolt T-Shirt',
   price: '$15.99',
   description:
-    'Get your testing superhero on with the Sauce Labs bolt T-shirt. From American Apparel, 100% cotton, slim fit with deep pockets.',
+    'Get your testing superhero on with the Sauce Labs bolt T-shirt. From American Apparel, 100% ringspun combed cotton, heather gray with red bolt.',
 };
 
 export const SAUCE_LABS_FLEECE_JACKET = {
   name: 'Sauce Labs Fleece Jacket',
   price: '$49.99',
   description:
-    "It's not every day that you come across a mid-century modern motorcycle jacket. Made from 100% polartec fleece, this gunfighter of a jacket blends function, fashion, and style.",
+    "It's not every day that you come across a midweight quarter-zip fleece jacket capable of handling everything from a relaxing day outdoors to a busy day at the office.",
 };

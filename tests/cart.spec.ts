@@ -3,14 +3,17 @@ import {
   SAUCE_LABS_BACKPACK,
   SAUCE_LABS_BIKE_LIGHT,
 } from '../src/constants/products';
+import {
+  assertElementVisible,
+  assertElementHidden,
+} from '../src/utils/assertions';
 
 test.describe('Cart Page @cart', () => {
-  test.beforeEach(async ({ loggedIn, inventoryPage, cartPage }) => {
-    await loggedIn();
-    await inventoryPage.addProductToCart(SAUCE_LABS_BACKPACK.name);
-    await inventoryPage.addProductToCart(SAUCE_LABS_BIKE_LIGHT.name);
-    await inventoryPage.assertCartItemCount(2);
-    await inventoryPage.cartLink.click();
+  test.beforeEach(async ({ authenticatedPage, cartPage }) => {
+    await authenticatedPage.addProductToCart(SAUCE_LABS_BACKPACK.name);
+    await authenticatedPage.addProductToCart(SAUCE_LABS_BIKE_LIGHT.name);
+    await authenticatedPage.assertCartItemCount(2);
+    await authenticatedPage.cartLink.click();
     await cartPage.assertLoaded();
   });
 
@@ -37,19 +40,19 @@ test.describe('Cart Page @cart', () => {
   }) => {
     await cartPage.removeProduct(SAUCE_LABS_BIKE_LIGHT.name);
     await expect(cartPage.cartItem).toHaveCount(1);
-    await expect(
+    await assertElementHidden(
       cartPage.getCartItemByName(SAUCE_LABS_BIKE_LIGHT.name)
-    ).not.toBeVisible();
-    await expect(
+    );
+    await assertElementVisible(
       cartPage.getCartItemByName(SAUCE_LABS_BACKPACK.name)
-    ).toBeVisible();
+    );
   });
 
   test('should navigate to inventory page when continue shopping button is clicked @positive', async ({
     cartPage,
     inventoryPage,
   }) => {
-    await expect(cartPage.continueShoppingButton).toBeVisible();
+    await assertElementVisible(cartPage.continueShoppingButton);
     await cartPage.continueShoppingButton.click();
     await inventoryPage.assertLoaded();
   });
@@ -60,26 +63,26 @@ test.describe('Cart Page @cart', () => {
     await cartPage.removeProduct(SAUCE_LABS_BACKPACK.name);
     await cartPage.removeProduct(SAUCE_LABS_BIKE_LIGHT.name);
     await expect(cartPage.cartItem).toHaveCount(0);
-    await expect(
+    await assertElementHidden(
       cartPage.getCartItemByName(SAUCE_LABS_BACKPACK.name)
-    ).not.toBeVisible();
-    await expect(
+    );
+    await assertElementHidden(
       cartPage.getCartItemByName(SAUCE_LABS_BIKE_LIGHT.name)
-    ).not.toBeVisible();
+    );
   });
 
-  test('should disable checkout button when cart is empty @negative', async ({
+  test('should keep checkout available when cart is empty @positive', async ({
     cartPage,
   }) => {
     await cartPage.removeProduct(SAUCE_LABS_BACKPACK.name);
     await cartPage.removeProduct(SAUCE_LABS_BIKE_LIGHT.name);
     await expect(cartPage.cartItem).toHaveCount(0);
-    await expect(
+    await assertElementHidden(
       cartPage.getCartItemByName(SAUCE_LABS_BACKPACK.name)
-    ).not.toBeVisible();
-    await expect(
+    );
+    await assertElementHidden(
       cartPage.getCartItemByName(SAUCE_LABS_BIKE_LIGHT.name)
-    ).not.toBeVisible();
-    await expect(cartPage.checkoutButton).toBeDisabled();
+    );
+    await expect(cartPage.checkoutButton).toBeEnabled();
   });
 });

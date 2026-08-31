@@ -20,13 +20,13 @@ export type PageObjects = {
   checkoutCompletePage: CheckoutCompletePage;
 };
 
-export type FlowFixtures = {
-  loggedIn: () => Promise<void>;
-  checkoutStepOneReady: () => Promise<void>;
-  checkoutStepTwoReady: () => Promise<void>;
+export type StateFixtures = {
+  authenticatedPage: InventoryPage;
+  checkoutStepOneReady: CheckoutStepOnePage;
+  checkoutStepTwoReady: CheckoutStepTwoPage;
 };
 
-export const test = base.extend<PageObjects & FlowFixtures>({
+export const test = base.extend<PageObjects & StateFixtures>({
   // Page object fixtures
   loginPage: async ({ page }, use) => {
     await use(new LoginPage(page));
@@ -50,44 +50,38 @@ export const test = base.extend<PageObjects & FlowFixtures>({
     await use(new CheckoutCompletePage(page));
   },
 
-  // Flows
-  loggedIn: async ({ loginPage, inventoryPage }, use) => {
-    await use(async () => {
-      await loginPage.login(STANDARD_USER.username, STANDARD_USER.password);
-      await loginPage.verifyAuthenticationSuccess();
-      await inventoryPage.assertLoaded();
-    });
+  // Ready-to-use application states
+  authenticatedPage: async ({ loginPage, inventoryPage }, use) => {
+    await loginPage.login(STANDARD_USER.username, STANDARD_USER.password);
+    await inventoryPage.assertLoaded();
+    await use(inventoryPage);
   },
 
   checkoutStepOneReady: async (
-    { loggedIn, inventoryPage, cartPage, checkoutStepOnePage },
+    { authenticatedPage, cartPage, checkoutStepOnePage },
     use
   ) => {
-    await use(async () => {
-      await loggedIn();
-      await inventoryPage.addProductToCart(SAUCE_LABS_BACKPACK.name);
-      await inventoryPage.assertCartItemCount(1);
-      await inventoryPage.cartLink.click();
-      await cartPage.assertLoaded();
-      await cartPage.checkoutButton.click();
-      await checkoutStepOnePage.assertLoaded();
-    });
+    await authenticatedPage.addProductToCart(SAUCE_LABS_BACKPACK.name);
+    await authenticatedPage.assertCartItemCount(1);
+    await authenticatedPage.cartLink.click();
+    await cartPage.assertLoaded();
+    await cartPage.checkoutButton.click();
+    await checkoutStepOnePage.assertLoaded();
+    await use(checkoutStepOnePage);
   },
 
   checkoutStepTwoReady: async (
-    { checkoutStepOneReady, checkoutStepOnePage, checkoutStepTwoPage },
+    { checkoutStepOneReady, checkoutStepTwoPage },
     use
   ) => {
-    await use(async () => {
-      await checkoutStepOneReady();
-      await checkoutStepOnePage.fillCheckoutForm(
-        checkoutData.firstName,
-        checkoutData.lastName,
-        checkoutData.postalCode
-      );
-      await checkoutStepOnePage.continueButton.click();
-      await checkoutStepTwoPage.assertLoaded();
-    });
+    await checkoutStepOneReady.fillCheckoutForm(
+      checkoutData.firstName,
+      checkoutData.lastName,
+      checkoutData.postalCode
+    );
+    await checkoutStepOneReady.continueButton.click();
+    await checkoutStepTwoPage.assertLoaded();
+    await use(checkoutStepTwoPage);
   },
 });
 

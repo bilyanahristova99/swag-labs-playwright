@@ -1,40 +1,49 @@
-import { expect, Locator } from '@playwright/test';
-import InventoryBasePage from './IventoryBasePage';
+import { expect, Locator, Page } from '@playwright/test';
+import InventoryBasePage from './InventoryBasePage';
+import { assertCartBadgeCount } from '../../utils/cartAssertions';
+import { assertProductImage } from '../../utils/productAssertions';
+import { assertElementsVisible } from '../../utils/assertions';
 
 export default class InventoryDetailsPage extends InventoryBasePage {
+  constructor(page: Page) {
+    super(page, 'inventory-item.html');
+  }
+
   private get productName(): Locator {
-    return this.page.locator('.inventory_details_name');
+    return this.page.getByTestId('inventory-item-name');
   }
 
   private get productPrice(): Locator {
-    return this.page.locator('.inventory_details_price');
+    return this.page.getByTestId('inventory-item-price');
   }
 
   private get productDescription(): Locator {
-    return this.page.locator('.inventory_details_desc');
+    return this.page.getByTestId('inventory-item-desc');
   }
 
   private get productImage(): Locator {
-    return this.page.locator('.inventory_details_img');
+    return this.page.locator('[data-test$="-img"]');
   }
 
   public get addToCartButton(): Locator {
-    return this.page.getByRole('button', { name: 'Add to cart' });
+    return this.page.getByTestId('add-to-cart');
   }
 
   public get removeFromCartButton(): Locator {
-    return this.page.getByRole('button', { name: 'Remove' });
+    return this.page.getByTestId('remove');
   }
 
   public get backButton(): Locator {
-    return this.page.getByRole('button', { name: 'Back' });
+    return this.page.getByTestId('back-to-products');
   }
 
   public async assertLoaded(): Promise<void> {
-    await expect(this.productName).toBeVisible();
-    await expect(this.productPrice).toBeVisible();
-    await expect(this.productDescription).toBeVisible();
-    await expect(this.productImage).toBeVisible();
+    await assertElementsVisible([
+      this.productName,
+      this.productPrice,
+      this.productDescription,
+      this.productImage,
+    ]);
   }
 
   public async assertProductDetails(
@@ -48,16 +57,10 @@ export default class InventoryDetailsPage extends InventoryBasePage {
   }
 
   public async assertProductImage(): Promise<void> {
-    await expect(this.productImage).toBeVisible();
-    await expect(this.productImage).toHaveAttribute('src');
+    await assertProductImage(this.productImage);
   }
 
   public async assertCartItemCount(expectedCount: number): Promise<void> {
-    if (expectedCount === 0) {
-      await expect(this.cartBadge).toBeHidden();
-    } else {
-      await expect(this.cartBadge).toBeVisible();
-      await expect(this.cartBadge).toHaveText(expectedCount.toString());
-    }
+    await assertCartBadgeCount(this.cartBadge, expectedCount);
   }
 }

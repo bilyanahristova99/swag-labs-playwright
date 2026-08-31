@@ -2,12 +2,14 @@ import { defineConfig, devices } from '@playwright/test';
 
 export default defineConfig({
   testDir: './tests',
-  workers: 1,
-  retries: 1,
-  forbidOnly: true,
-  reporter: [['list'], ['html']],
+  fullyParallel: true,
+  workers: process.env.CI ? 1 : undefined,
+  retries: process.env.CI ? 1 : 0,
+  forbidOnly: Boolean(process.env.CI),
+  reporter: [['list'], ['html', { open: 'never' }]],
   use: {
-    baseURL: 'https://www.saucedemo.com/v1/',
+    baseURL: 'https://www.saucedemo.com/',
+    testIdAttribute: 'data-test',
     trace: 'on-first-retry',
     screenshot: 'only-on-failure',
     video: 'retain-on-failure',

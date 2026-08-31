@@ -42,7 +42,7 @@ src/
 tests/                # Test specifications
 ```
 
-Base URL: `https://www.saucedemo.com/v1/` (configured in `playwright.config.ts`). Reports are generated in `playwright-report/` after each run.
+Base URL: `https://www.saucedemo.com/` (configured in `playwright.config.ts`). Reports are generated in `playwright-report/` after each run.
 
 ## Test Users Available 👥
 

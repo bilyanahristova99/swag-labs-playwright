@@ -1,4 +1,4 @@
-import { Page } from '@playwright/test';
+import { expect, Page } from '@playwright/test';
 import IPage from '../interfaces/IPage';
 
 export default class BasePage implements IPage {
@@ -12,6 +12,12 @@ export default class BasePage implements IPage {
 
   public async goto(): Promise<void> {
     await this.page.goto(this.path);
+  }
+
+  protected async assertUrl(): Promise<void> {
+    await expect(this.page).toHaveURL(
+      new RegExp(`/${this.path.replace('.', '\\.')}$`)
+    );
   }
 
   public async waitForLoadState(

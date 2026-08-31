@@ -1,23 +1,34 @@
 import { expect, Locator } from '@playwright/test';
 import { FILTER_OPTIONS } from '../../constants/enums';
 import { InventorySelectors } from '../../constants/selectors/shared';
-import InventoryBasePage from './IventoryBasePage';
+import InventoryBasePage from './InventoryBasePage';
+import { assertCartBadgeCount } from '../../utils/cartAssertions';
+import {
+  assertProductImage,
+  assertProductDetails,
+  STANDARD_PRODUCT_SELECTORS,
+} from '../../utils/productAssertions';
+import { assertElementsVisible } from '../../utils/assertions';
 
 export default class InventoryPage extends InventoryBasePage {
+  constructor(page: import('@playwright/test').Page) {
+    super(page, 'inventory.html');
+  }
+
   private get inventoryContainer(): Locator {
-    return this.page.locator('.inventory_list');
+    return this.page.getByTestId('inventory-list');
   }
 
   public get sortDropdown(): Locator {
-    return this.page.locator('.product_sort_container');
+    return this.page.getByTestId('product-sort-container');
   }
 
   private get inventoryItem(): Locator {
-    return this.page.locator('.inventory_item');
+    return this.page.getByTestId('inventory-item');
   }
 
   public async assertLoaded(): Promise<void> {
-    await expect(this.inventoryContainer).toBeVisible();
+    await assertElementsVisible([this.inventoryContainer]);
   }
 
   public async goToProductDetail(productName: string): Promise<void> {
@@ -45,13 +56,7 @@ export default class InventoryPage extends InventoryBasePage {
   }
 
   public async assertCartItemCount(expectedCount: number): Promise<void> {
-    if (expectedCount === 0) {
-      // When cart is empty, the badge element is not rendered and is hidden
-      await expect(this.cartBadge).toBeHidden();
-    } else {
-      await expect(this.cartBadge).toBeVisible();
-      await expect(this.cartBadge).toHaveText(expectedCount.toString());
-    }
+    await assertCartBadgeCount(this.cartBadge, expectedCount);
   }
 
   public async sortBy(sortOption: FILTER_OPTIONS): Promise<void> {
@@ -166,12 +171,8 @@ export default class InventoryPage extends InventoryBasePage {
 
   public async assertProductImage(productName: string): Promise<void> {
     const item = this.getProductItemByName(productName);
-    await expect(
-      item.locator(InventorySelectors.INVENTORY_ITEM_IMAGE).getByRole('img')
-    ).toBeVisible();
-    await expect(
-      item.locator(InventorySelectors.INVENTORY_ITEM_IMAGE).getByRole('img')
-    ).toHaveAttribute('src');
+    const imageLocator = item.locator(InventorySelectors.INVENTORY_ITEM_IMAGE);
+    await assertProductImage(imageLocator);
   }
 
   public async assertProductElements(
@@ -180,9 +181,12 @@ export default class InventoryPage extends InventoryBasePage {
     description: string
   ): Promise<void> {
     const productItem = this.getProductItemByName(productName);
-    await expect(productItem).toBeVisible();
-    await this.assertProductName(productName);
-    await this.assertProductPrice(productName, price);
-    await this.assertProductDescription(productName, description);
+    await assertProductDetails(
+      productItem,
+      productName,
+      price,
+      description,
+      STANDARD_PRODUCT_SELECTORS
+    );
   }
 }

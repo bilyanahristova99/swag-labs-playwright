@@ -1,6 +1,8 @@
 import { test, expect } from '../src/fixtures/test.fixture';
 import checkoutData from '../src/constants/checkoutData';
 import { SAUCE_LABS_BACKPACK } from '../src/constants/products';
+import { assertFormFieldsVisible } from '../src/utils/formAssertions';
+import { assertButtonState } from '../src/utils/assertions';
 
 test.describe('Checkout Process @checkout', () => {
   test.describe('Checkout Step One Page @checkout', () => {
@@ -9,17 +11,18 @@ test.describe('Checkout Process @checkout', () => {
     const emptyPostalCodeError = 'Postal Code is required';
 
     test.beforeEach(async ({ checkoutStepOneReady }) => {
-      // Prepares: logged in, item added, at checkout step one
-      await checkoutStepOneReady();
+      await checkoutStepOneReady.assertLoaded();
     });
 
     test('should navigate to checkout step two when valid checkout data is submitted @positive', async ({
       checkoutStepTwoPage,
       checkoutStepOnePage,
     }) => {
-      await expect(checkoutStepOnePage.firstNameInput).toBeVisible();
-      await expect(checkoutStepOnePage.lastNameInput).toBeVisible();
-      await expect(checkoutStepOnePage.postalCodeInput).toBeVisible();
+      await assertFormFieldsVisible([
+        checkoutStepOnePage.firstNameInput,
+        checkoutStepOnePage.lastNameInput,
+        checkoutStepOnePage.postalCodeInput,
+      ]);
 
       await checkoutStepOnePage.fillCheckoutForm(
         checkoutData.firstName,
@@ -27,8 +30,10 @@ test.describe('Checkout Process @checkout', () => {
         checkoutData.postalCode
       );
 
-      await expect(checkoutStepOnePage.continueButton).toBeVisible();
-      await expect(checkoutStepOnePage.continueButton).toBeEnabled();
+      await assertButtonState(checkoutStepOnePage.continueButton, {
+        visible: true,
+        enabled: true,
+      });
       await checkoutStepOnePage.continueButton.click();
       await checkoutStepTwoPage.assertLoaded();
     });
@@ -36,9 +41,11 @@ test.describe('Checkout Process @checkout', () => {
     test('should display error message when first name is missing @negative', async ({
       checkoutStepOnePage,
     }) => {
-      await expect(checkoutStepOnePage.firstNameInput).toBeVisible();
-      await expect(checkoutStepOnePage.lastNameInput).toBeVisible();
-      await expect(checkoutStepOnePage.postalCodeInput).toBeVisible();
+      await assertFormFieldsVisible([
+        checkoutStepOnePage.firstNameInput,
+        checkoutStepOnePage.lastNameInput,
+        checkoutStepOnePage.postalCodeInput,
+      ]);
 
       await checkoutStepOnePage.fillCheckoutForm(
         '',
@@ -46,8 +53,10 @@ test.describe('Checkout Process @checkout', () => {
         checkoutData.postalCode
       );
 
-      await expect(checkoutStepOnePage.continueButton).toBeVisible();
-      await expect(checkoutStepOnePage.continueButton).toBeEnabled();
+      await assertButtonState(checkoutStepOnePage.continueButton, {
+        visible: true,
+        enabled: true,
+      });
       await checkoutStepOnePage.continueButton.click();
       await expect(checkoutStepOnePage.errorMessage).toBeVisible();
       await expect(checkoutStepOnePage.errorMessage).toContainText(
@@ -58,9 +67,11 @@ test.describe('Checkout Process @checkout', () => {
     test('should display error message when last name is missing @negative', async ({
       checkoutStepOnePage,
     }) => {
-      await expect(checkoutStepOnePage.firstNameInput).toBeVisible();
-      await expect(checkoutStepOnePage.lastNameInput).toBeVisible();
-      await expect(checkoutStepOnePage.postalCodeInput).toBeVisible();
+      await assertFormFieldsVisible([
+        checkoutStepOnePage.firstNameInput,
+        checkoutStepOnePage.lastNameInput,
+        checkoutStepOnePage.postalCodeInput,
+      ]);
 
       await checkoutStepOnePage.fillCheckoutForm(
         checkoutData.firstName,
@@ -68,8 +79,10 @@ test.describe('Checkout Process @checkout', () => {
         checkoutData.postalCode
       );
 
-      await expect(checkoutStepOnePage.continueButton).toBeVisible();
-      await expect(checkoutStepOnePage.continueButton).toBeEnabled();
+      await assertButtonState(checkoutStepOnePage.continueButton, {
+        visible: true,
+        enabled: true,
+      });
       await checkoutStepOnePage.continueButton.click();
       await expect(checkoutStepOnePage.errorMessage).toBeVisible();
       await expect(checkoutStepOnePage.errorMessage).toContainText(
@@ -80,9 +93,11 @@ test.describe('Checkout Process @checkout', () => {
     test('should display error message when postal code is missing @negative', async ({
       checkoutStepOnePage,
     }) => {
-      await expect(checkoutStepOnePage.firstNameInput).toBeVisible();
-      await expect(checkoutStepOnePage.lastNameInput).toBeVisible();
-      await expect(checkoutStepOnePage.postalCodeInput).toBeVisible();
+      await assertFormFieldsVisible([
+        checkoutStepOnePage.firstNameInput,
+        checkoutStepOnePage.lastNameInput,
+        checkoutStepOnePage.postalCodeInput,
+      ]);
 
       await checkoutStepOnePage.fillCheckoutForm(
         checkoutData.firstName,
@@ -90,8 +105,10 @@ test.describe('Checkout Process @checkout', () => {
         ''
       );
 
-      await expect(checkoutStepOnePage.continueButton).toBeVisible();
-      await expect(checkoutStepOnePage.continueButton).toBeEnabled();
+      await assertButtonState(checkoutStepOnePage.continueButton, {
+        visible: true,
+        enabled: true,
+      });
       await checkoutStepOnePage.continueButton.click();
 
       await expect(checkoutStepOnePage.errorMessage).toBeVisible();
@@ -104,8 +121,10 @@ test.describe('Checkout Process @checkout', () => {
       checkoutStepOnePage,
       cartPage,
     }) => {
-      await expect(checkoutStepOnePage.cancelButton).toBeVisible();
-      await expect(checkoutStepOnePage.cancelButton).toBeEnabled();
+      await assertButtonState(checkoutStepOnePage.cancelButton, {
+        visible: true,
+        enabled: true,
+      });
       await checkoutStepOnePage.cancelButton.click();
       await cartPage.assertLoaded();
     });
@@ -113,8 +132,7 @@ test.describe('Checkout Process @checkout', () => {
 
   test.describe('Checkout Step Two Page @checkout', () => {
     test.beforeEach(async ({ checkoutStepTwoReady }) => {
-      // Prepares: logged in, item added, step one filled, at step two
-      await checkoutStepTwoReady();
+      await checkoutStepTwoReady.assertLoaded();
     });
 
     test('should display correct product details for items in checkout summary @positive', async ({
@@ -142,8 +160,10 @@ test.describe('Checkout Process @checkout', () => {
       checkoutStepTwoPage,
       inventoryPage,
     }) => {
-      await expect(checkoutStepTwoPage.cancelButton).toBeVisible();
-      await expect(checkoutStepTwoPage.cancelButton).toBeEnabled();
+      await assertButtonState(checkoutStepTwoPage.cancelButton, {
+        visible: true,
+        enabled: true,
+      });
       await checkoutStepTwoPage.cancelButton.click();
       await inventoryPage.assertLoaded();
       await inventoryPage.assertCartItemCount(1);
@@ -153,8 +173,10 @@ test.describe('Checkout Process @checkout', () => {
       checkoutStepTwoPage,
       checkoutCompletePage,
     }) => {
-      await expect(checkoutStepTwoPage.finishButton).toBeVisible();
-      await expect(checkoutStepTwoPage.finishButton).toBeEnabled();
+      await assertButtonState(checkoutStepTwoPage.finishButton, {
+        visible: true,
+        enabled: true,
+      });
       await checkoutStepTwoPage.finishButton.click();
       await checkoutCompletePage.assertLoaded();
     });

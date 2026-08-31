@@ -1,11 +1,10 @@
 import { test, expect } from '../src/fixtures/test.fixture';
 import { SAUCE_LABS_BACKPACK } from '../src/constants/products';
+import { assertElementVisible } from '../src/utils/assertions';
 
 test.describe('Product Detail Page @detail', () => {
-  test.beforeEach(async ({ loggedIn, inventoryPage, inventoryDetailsPage }) => {
-    await loggedIn();
-    await inventoryPage.assertLoaded();
-    await inventoryPage.goToProductDetail(SAUCE_LABS_BACKPACK.name);
+  test.beforeEach(async ({ authenticatedPage, inventoryDetailsPage }) => {
+    await authenticatedPage.goToProductDetail(SAUCE_LABS_BACKPACK.name);
     await inventoryDetailsPage.assertLoaded();
   });
 
@@ -25,7 +24,7 @@ test.describe('Product Detail Page @detail', () => {
     inventoryDetailsPage,
   }) => {
     await inventoryDetailsPage.assertCartItemCount(0);
-    await expect(inventoryDetailsPage.addToCartButton).toBeVisible();
+    await assertElementVisible(inventoryDetailsPage.addToCartButton);
     await inventoryDetailsPage.addToCartButton.click();
     await inventoryDetailsPage.assertCartItemCount(1);
   });
@@ -33,12 +32,12 @@ test.describe('Product Detail Page @detail', () => {
   test('should remove product from cart on detail page and update cart badge @positive', async ({
     inventoryDetailsPage,
   }) => {
-    await expect(inventoryDetailsPage.addToCartButton).toBeVisible();
+    await assertElementVisible(inventoryDetailsPage.addToCartButton);
     await inventoryDetailsPage.addToCartButton.click();
     await inventoryDetailsPage.assertCartItemCount(1);
-    await expect(inventoryDetailsPage.removeFromCartButton).toBeVisible();
+    await assertElementVisible(inventoryDetailsPage.removeFromCartButton);
     await inventoryDetailsPage.removeFromCartButton.click();
-    await expect(inventoryDetailsPage.addToCartButton).toBeVisible();
+    await assertElementVisible(inventoryDetailsPage.addToCartButton);
     await inventoryDetailsPage.assertCartItemCount(0);
   });
 
@@ -46,7 +45,7 @@ test.describe('Product Detail Page @detail', () => {
     inventoryPage,
     inventoryDetailsPage,
   }) => {
-    await expect(inventoryDetailsPage.backButton).toBeVisible();
+    await assertElementVisible(inventoryDetailsPage.backButton);
     await inventoryDetailsPage.backButton.click();
     await inventoryPage.assertLoaded();
   });
@@ -55,9 +54,9 @@ test.describe('Product Detail Page @detail', () => {
     cartPage,
     inventoryDetailsPage,
   }) => {
-    await expect(inventoryDetailsPage.addToCartButton).toBeVisible();
+    await assertElementVisible(inventoryDetailsPage.addToCartButton);
     await inventoryDetailsPage.addToCartButton.click();
-    await expect(inventoryDetailsPage.cartLink).toBeVisible();
+    await assertElementVisible(inventoryDetailsPage.cartLink);
     await inventoryDetailsPage.cartLink.click();
     await cartPage.assertLoaded();
   });

@@ -1,5 +1,6 @@
-import { Locator, Page, expect } from '@playwright/test';
+import { Locator, Page } from '@playwright/test';
 import BasePage from '../BasePage';
+import { assertElementsVisible } from '../../utils/assertions';
 
 export class CheckoutCompletePage extends BasePage {
   constructor(page: Page) {
@@ -7,10 +8,10 @@ export class CheckoutCompletePage extends BasePage {
   }
 
   async assertLoaded(): Promise<void> {
-    await expect(this.page.locator('.complete-header')).toBeVisible();
+    await assertElementsVisible([this.page.getByTestId('complete-header')]);
   }
 
   public get backHomeButton(): Locator {
-    return this.page.getByRole('button', { name: 'Back Home' });
+    return this.page.getByTestId('back-to-products');
   }
 }

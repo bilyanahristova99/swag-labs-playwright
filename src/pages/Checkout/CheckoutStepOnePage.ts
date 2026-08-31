@@ -1,6 +1,6 @@
-import { Page, Locator, expect } from '@playwright/test';
+import { Page, Locator } from '@playwright/test';
 import BasePage from '../BasePage';
-import { ButtonSelectors } from '../../constants/selectors/shared';
+import { assertElementsVisible } from '../../utils/assertions';
 
 export class CheckoutStepOnePage extends BasePage {
   constructor(page: Page) {
@@ -8,31 +8,33 @@ export class CheckoutStepOnePage extends BasePage {
   }
 
   public get firstNameInput(): Locator {
-    return this.page.getByPlaceholder('First Name');
+    return this.page.getByTestId('firstName');
   }
 
   public get lastNameInput(): Locator {
-    return this.page.getByPlaceholder('Last Name');
+    return this.page.getByTestId('lastName');
   }
 
   public get postalCodeInput(): Locator {
-    return this.page.getByPlaceholder('Zip/Postal Code');
+    return this.page.getByTestId('postalCode');
   }
 
   public get continueButton(): Locator {
-    return this.page.locator(ButtonSelectors.BUTTON_PRIMARY);
+    return this.page.getByTestId('continue');
   }
 
   public get cancelButton(): Locator {
-    return this.page.locator(ButtonSelectors.BUTTON_SECONDARY);
+    return this.page.getByTestId('cancel');
   }
 
   public get errorMessage(): Locator {
-    return this.page.locator('[data-test="error"]');
+    return this.page.getByTestId('error');
   }
 
   public async assertLoaded(): Promise<void> {
-    await expect(this.page.locator('.checkout_info')).toBeVisible();
+    await assertElementsVisible([
+      this.page.getByTestId('checkout-info-container'),
+    ]);
   }
 
   public async fillCheckoutForm(

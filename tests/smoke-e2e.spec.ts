@@ -1,6 +1,5 @@
 import { test, expect } from '../src/fixtures/test.fixture';
 import { FILTER_OPTIONS } from '../src/constants/enums';
-import { STANDARD_USER } from '../src/constants/users';
 import checkoutData from '../src/constants/checkoutData';
 import {
   SAUCE_LABS_BACKPACK,
@@ -8,23 +7,14 @@ import {
 } from '../src/constants/products';
 
 test.describe('Smoke E2E Flows @smoke', () => {
-  test.afterEach(async ({ page }) => {
-    await page.close();
-  });
-
   test('should complete full checkout flow: login, add products, checkout, and logout @smoke', async ({
+    authenticatedPage: inventoryPage,
     loginPage,
-    inventoryPage,
     cartPage,
     checkoutStepOnePage,
     checkoutStepTwoPage,
     checkoutCompletePage,
   }) => {
-    await loginPage.goto();
-    await loginPage.usernameInput.fill(STANDARD_USER.username);
-    await loginPage.passwordInput.fill(STANDARD_USER.password);
-    await loginPage.loginButton.click();
-    await inventoryPage.assertLoaded();
     await inventoryPage.sortBy(FILTER_OPTIONS.NAME_A_TO_Z);
     await inventoryPage.addProductToCart(SAUCE_LABS_BACKPACK.name);
     await inventoryPage.addProductToCart(SAUCE_LABS_BIKE_LIGHT.name);
@@ -49,19 +39,14 @@ test.describe('Smoke E2E Flows @smoke', () => {
   });
 
   test('should complete checkout flow with product added from detail page @smoke', async ({
+    authenticatedPage: inventoryPage,
     loginPage,
-    inventoryPage,
     inventoryDetailsPage,
     cartPage,
     checkoutStepOnePage,
     checkoutStepTwoPage,
     checkoutCompletePage,
   }) => {
-    await loginPage.goto();
-    await loginPage.usernameInput.fill(STANDARD_USER.username);
-    await loginPage.passwordInput.fill(STANDARD_USER.password);
-    await loginPage.loginButton.click();
-    await inventoryPage.assertLoaded();
     await inventoryPage.goToProductDetail(SAUCE_LABS_BACKPACK.name);
     await inventoryDetailsPage.assertLoaded();
     await inventoryDetailsPage.addToCartButton.click();
@@ -86,18 +71,13 @@ test.describe('Smoke E2E Flows @smoke', () => {
   });
 
   test('should handle product management flow: add, remove, and navigate between pages @smoke', async ({
+    authenticatedPage: inventoryPage,
     loginPage,
-    inventoryPage,
     inventoryDetailsPage,
     cartPage,
     checkoutStepOnePage,
     checkoutStepTwoPage,
   }) => {
-    await loginPage.goto();
-    await loginPage.usernameInput.fill(STANDARD_USER.username);
-    await loginPage.passwordInput.fill(STANDARD_USER.password);
-    await loginPage.loginButton.click();
-    await inventoryPage.assertLoaded();
     await inventoryPage.addProductToCart(SAUCE_LABS_BACKPACK.name);
     await inventoryPage.addProductToCart(SAUCE_LABS_BIKE_LIGHT.name);
     await inventoryPage.cartLink.click();

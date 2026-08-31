@@ -1,10 +1,10 @@
-import { Page, expect, Locator } from '@playwright/test';
+import { Page, Locator } from '@playwright/test';
 import BasePage from '../BasePage';
 import {
-  ButtonSelectors,
-  CartSelectors,
-} from '../../constants/selectors/shared';
-import { InventorySelectors } from '../../constants/selectors/shared';
+  assertProductDetails,
+  STANDARD_PRODUCT_SELECTORS,
+} from '../../utils/productAssertions';
+import { assertElementsVisible } from '../../utils/assertions';
 
 export class CheckoutStepTwoPage extends BasePage {
   constructor(page: Page) {
@@ -12,19 +12,21 @@ export class CheckoutStepTwoPage extends BasePage {
   }
 
   async assertLoaded(): Promise<void> {
-    await expect(this.page.locator('.summary_info')).toBeVisible();
+    await assertElementsVisible([
+      this.page.getByTestId('checkout-summary-container'),
+    ]);
   }
 
   private get cartItem(): Locator {
-    return this.page.locator(CartSelectors.CART_ITEM);
+    return this.page.getByTestId('inventory-item');
   }
 
   private get summaryTotal(): Locator {
-    return this.page.locator('.summary_total_label');
+    return this.page.getByTestId('total-label');
   }
 
   public get finishButton(): Locator {
-    return this.page.getByRole('button', { name: 'Finish' });
+    return this.page.getByTestId('finish');
   }
 
   public getCartItemByName(productName: string): Locator {
@@ -32,7 +34,7 @@ export class CheckoutStepTwoPage extends BasePage {
   }
 
   public get cancelButton(): Locator {
-    return this.page.locator(ButtonSelectors.BUTTON_SECONDARY);
+    return this.page.getByTestId('cancel');
   }
 
   public async assertProductDetails(
@@ -41,17 +43,13 @@ export class CheckoutStepTwoPage extends BasePage {
     expectedDescription: string
   ): Promise<void> {
     const item = this.getCartItemByName(productName);
-    await expect(item).toBeVisible();
-
-    await expect(
-      item.locator(InventorySelectors.INVENTORY_ITEM_NAME)
-    ).toHaveText(productName);
-    await expect(
-      item.locator(InventorySelectors.INVENTORY_ITEM_PRICE)
-    ).toHaveText(expectedPrice);
-    await expect(
-      item.locator(InventorySelectors.INVENTORY_ITEM_DESCRIPTION)
-    ).toHaveText(expectedDescription);
+    await assertProductDetails(
+      item,
+      productName,
+      expectedPrice,
+      expectedDescription,
+      STANDARD_PRODUCT_SELECTORS
+    );
   }
 
   public async getTotalPrice(): Promise<string> {
