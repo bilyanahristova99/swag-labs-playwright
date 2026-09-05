@@ -25,10 +25,17 @@ export default class LoginPage extends BasePage implements ILoginPage {
 
   public async login(username: string, password: string): Promise<void> {
     await this.goto();
+    await this.submitCredentials(username, password);
+    await this.verifyAuthenticationSuccess();
+  }
+
+  public async submitCredentials(
+    username: string,
+    password: string
+  ): Promise<void> {
     await this.usernameInput.fill(username);
     await this.passwordInput.fill(password);
     await this.loginButton.click();
-    await this.verifyAuthenticationSuccess();
   }
 
   public async verifyAuthenticationSuccess(): Promise<void> {

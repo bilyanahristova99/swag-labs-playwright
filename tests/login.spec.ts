@@ -6,13 +6,35 @@ import {
 } from '../src/constants/users';
 import { assertElementsVisible } from '../src/utils/assertions';
 
-test.describe('Login Page @login', () => {
-  const emptyUsernameError = 'Epic sadface: Username is required';
-  const emptyPasswordError = 'Epic sadface: Password is required';
-  const wrongCredentialsError =
-    'Epic sadface: Username and password do not match any user in this service';
-  const lockedOutError = 'Epic sadface: Sorry, this user has been locked out.';
+const validationCases = [
+  {
+    name: 'username is empty',
+    username: '',
+    password: STANDARD_USER.password,
+    expectedError: 'Epic sadface: Username is required',
+  },
+  {
+    name: 'password is empty',
+    username: STANDARD_USER.username,
+    password: '',
+    expectedError: 'Epic sadface: Password is required',
+  },
+  {
+    name: 'password is incorrect',
+    username: STANDARD_USER.username,
+    password: 'wrong_password',
+    expectedError:
+      'Epic sadface: Username and password do not match any user in this service',
+  },
+  {
+    name: 'user account is locked out',
+    username: LOCKED_OUT_USER.username,
+    password: LOCKED_OUT_USER.password,
+    expectedError: 'Epic sadface: Sorry, this user has been locked out.',
+  },
+];
 
+test.describe('Login Page @login', () => {
   test.beforeEach(async ({ loginPage }) => {
     await loginPage.goto();
   });
@@ -25,9 +47,10 @@ test.describe('Login Page @login', () => {
       loginPage.passwordInput,
       loginPage.loginButton,
     ]);
-    await loginPage.usernameInput.fill(STANDARD_USER.username);
-    await loginPage.passwordInput.fill(STANDARD_USER.password);
-    await loginPage.loginButton.click();
+    await loginPage.submitCredentials(
+      STANDARD_USER.username,
+      STANDARD_USER.password
+    );
     await loginPage.verifyAuthenticationSuccess();
   });
 
@@ -39,65 +62,26 @@ test.describe('Login Page @login', () => {
       loginPage.passwordInput,
       loginPage.loginButton,
     ]);
-    await loginPage.usernameInput.fill(PERFORMANCE_GLITCH_USER.username);
-    await loginPage.passwordInput.fill(PERFORMANCE_GLITCH_USER.password);
-    await loginPage.loginButton.click();
+    await loginPage.submitCredentials(
+      PERFORMANCE_GLITCH_USER.username,
+      PERFORMANCE_GLITCH_USER.password
+    );
     await loginPage.verifyAuthenticationSuccess();
   });
 
-  test('should display error message when username is empty @negative', async ({
-    loginPage,
-  }) => {
-    await assertElementsVisible([
-      loginPage.usernameInput,
-      loginPage.loginButton,
-    ]);
-    await loginPage.passwordInput.fill(STANDARD_USER.password);
-    await loginPage.loginButton.click();
-    await expect(loginPage.errorSection).toBeVisible();
-    await expect(loginPage.errorSection).toHaveText(emptyUsernameError);
-  });
+  for (const { name, username, password, expectedError } of validationCases) {
+    test(`should display an error when ${name} @negative`, async ({
+      loginPage,
+    }) => {
+      await assertElementsVisible([
+        loginPage.usernameInput,
+        loginPage.passwordInput,
+        loginPage.loginButton,
+      ]);
+      await loginPage.submitCredentials(username, password);
 
-  test('should display error message when password is empty @negative', async ({
-    loginPage,
-  }) => {
-    await assertElementsVisible([
-      loginPage.usernameInput,
-      loginPage.loginButton,
-    ]);
-    await loginPage.usernameInput.fill(STANDARD_USER.username);
-    await loginPage.loginButton.click();
-    await expect(loginPage.errorSection).toBeVisible();
-    await expect(loginPage.errorSection).toHaveText(emptyPasswordError);
-  });
-
-  test('should display error message when password is incorrect @negative', async ({
-    loginPage,
-  }) => {
-    await assertElementsVisible([
-      loginPage.usernameInput,
-      loginPage.passwordInput,
-      loginPage.loginButton,
-    ]);
-    await loginPage.usernameInput.fill(STANDARD_USER.username);
-    await loginPage.passwordInput.fill('wrong_password');
-    await loginPage.loginButton.click();
-    await expect(loginPage.errorSection).toBeVisible();
-    await expect(loginPage.errorSection).toHaveText(wrongCredentialsError);
-  });
-
-  test('should display error message when user account is locked out @negative', async ({
-    loginPage,
-  }) => {
-    await assertElementsVisible([
-      loginPage.usernameInput,
-      loginPage.passwordInput,
-      loginPage.loginButton,
-    ]);
-    await loginPage.usernameInput.fill(LOCKED_OUT_USER.username);
-    await loginPage.passwordInput.fill(LOCKED_OUT_USER.password);
-    await loginPage.loginButton.click();
-    await expect(loginPage.errorSection).toBeVisible();
-    await expect(loginPage.errorSection).toHaveText(lockedOutError);
-  });
+      await expect(loginPage.errorSection).toBeVisible();
+      await expect(loginPage.errorSection).toHaveText(expectedError);
+    });
+  }
 });

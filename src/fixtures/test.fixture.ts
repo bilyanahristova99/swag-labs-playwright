@@ -6,9 +6,8 @@ import { CheckoutStepOnePage } from '../pages/Checkout/CheckoutStepOnePage';
 import { CheckoutStepTwoPage } from '../pages/Checkout/CheckoutStepTwoPage';
 import { CheckoutCompletePage } from '../pages/Checkout/CheckoutCompletePage';
 import { STANDARD_USER } from '../constants/users';
-import { SAUCE_LABS_BACKPACK } from '../constants/products';
-import checkoutData from '../constants/checkoutData';
 import InventoryDetailsPage from '../pages/Inventory/InventoryDetailsPage';
+import CheckoutFlow from '../flows/CheckoutFlow';
 
 export type PageObjects = {
   loginPage: LoginPage;
@@ -20,13 +19,12 @@ export type PageObjects = {
   checkoutCompletePage: CheckoutCompletePage;
 };
 
-export type StateFixtures = {
+export type TestFixtures = {
+  checkoutFlow: CheckoutFlow;
   authenticatedPage: InventoryPage;
-  checkoutStepOneReady: CheckoutStepOnePage;
-  checkoutStepTwoReady: CheckoutStepTwoPage;
 };
 
-export const test = base.extend<PageObjects & StateFixtures>({
+export const test = base.extend<PageObjects & TestFixtures>({
   // Page object fixtures
   loginPage: async ({ page }, use) => {
     await use(new LoginPage(page));
@@ -50,38 +48,32 @@ export const test = base.extend<PageObjects & StateFixtures>({
     await use(new CheckoutCompletePage(page));
   },
 
-  // Ready-to-use application states
+  checkoutFlow: async (
+    {
+      authenticatedPage,
+      cartPage,
+      checkoutStepOnePage,
+      checkoutStepTwoPage,
+      checkoutCompletePage,
+    },
+    use
+  ) => {
+    await use(
+      new CheckoutFlow(
+        authenticatedPage,
+        cartPage,
+        checkoutStepOnePage,
+        checkoutStepTwoPage,
+        checkoutCompletePage
+      )
+    );
+  },
+
+  // Most commonly used application state
   authenticatedPage: async ({ loginPage, inventoryPage }, use) => {
     await loginPage.login(STANDARD_USER.username, STANDARD_USER.password);
     await inventoryPage.assertLoaded();
     await use(inventoryPage);
-  },
-
-  checkoutStepOneReady: async (
-    { authenticatedPage, cartPage, checkoutStepOnePage },
-    use
-  ) => {
-    await authenticatedPage.addProductToCart(SAUCE_LABS_BACKPACK.name);
-    await authenticatedPage.assertCartItemCount(1);
-    await authenticatedPage.cartLink.click();
-    await cartPage.assertLoaded();
-    await cartPage.checkoutButton.click();
-    await checkoutStepOnePage.assertLoaded();
-    await use(checkoutStepOnePage);
-  },
-
-  checkoutStepTwoReady: async (
-    { checkoutStepOneReady, checkoutStepTwoPage },
-    use
-  ) => {
-    await checkoutStepOneReady.fillCheckoutForm(
-      checkoutData.firstName,
-      checkoutData.lastName,
-      checkoutData.postalCode
-    );
-    await checkoutStepOneReady.continueButton.click();
-    await checkoutStepTwoPage.assertLoaded();
-    await use(checkoutStepTwoPage);
   },
 });
 

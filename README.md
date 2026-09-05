@@ -34,7 +34,8 @@ yarn test:negative        # Error handling tests
 ```text
 src/
   constants/          # Test data, product information, enums, and selectors
-  fixtures/           # Page object fixtures and reusable application states
+  fixtures/           # Page object, flow, and application-state fixtures
+  flows/              # Parameterized reusable business journeys
   interfaces/         # Shared TypeScript page contracts
   pages/              # Page Object Model classes grouped by feature
     BasePage.ts
@@ -42,6 +43,7 @@ src/
     Inventory/
     Cart/
     Checkout/
+  types/              # Shared TypeScript models for test data
   utils/              # Reusable domain-specific assertion helpers
 
 tests/
@@ -69,11 +71,11 @@ Base URL: `https://www.saucedemo.com/` (configured in `playwright.config.ts`). R
 
 ### Currently Automated
 
-- **Login page**: Valid logins, error handling (empty fields, wrong credentials, locked out user)
+- **Login page**: Valid logins and data-driven error handling (empty fields, wrong credentials, locked out user)
 - **Inventory page**: Product listing, sorting, adding items to cart
 - **Product details page**: Viewing product info, adding items from detail page
 - **Shopping cart**: Viewing contents, removing items, navigating to checkout
-- **Checkout flow**: Form validation, successful checkout completion
+- **Checkout flow**: Data-driven form validation, product summary, price calculation, navigation, and successful completion
 - **Smoke E2E tests**: Full end-to-end journeys covering critical user flows (login → browse → checkout → logout)
 
 All tests are tagged with feature tags (`@login`, `@inventory`, `@cart`, `@checkout`, `@detail`, `@smoke`) and category tags (`@positive`, `@negative`).
@@ -85,7 +87,7 @@ All tests are tagged with feature tags (`@login`, `@inventory`, `@cart`, `@check
 
 ## Approach & Strategy 🏗️
 
-I follow the **Page Object Model** pattern with TypeScript interfaces defining page contracts. Tests are tagged for easy filtering.
+The suite follows the **Page Object Model** pattern, with typed test data, reusable business flows, and custom Playwright fixtures. Tests are tagged for easy filtering.
 
 **Page-specific specs** (current)
 
@@ -108,23 +110,37 @@ The suite uses custom Playwright fixtures to provide page objects and reusable a
 - Are initialized only when requested by a test
 - Share the same isolated browser context within each test
 
-**State fixtures**
+**Flow and state fixtures**
 
 - `authenticatedPage` - Logs in with the standard user and provides a ready inventory page
-- `checkoutStepOneReady` - Adds the default product and opens checkout step one
-- `checkoutStepTwoReady` - Completes the customer information form and opens checkout step two
+- `checkoutFlow` - Provides parameterized checkout journeys for one or multiple products and different customer data
 
-State fixtures are composed through dependencies:
+Fixtures are composed through dependencies:
 
 ```text
 authenticatedPage
         ↓
-checkoutStepOneReady
-        ↓
-checkoutStepTwoReady
+checkoutFlow
 ```
 
 Each test receives a fresh browser context, so cart contents, authentication, and application state are not shared between tests.
+
+### Parameterized Flows & Test Data 🔄
+
+`CheckoutFlow` separates reusable business journeys from individual page objects. Tests can open a specific checkout step or complete an order by supplying one product, multiple products, and typed customer data:
+
+```ts
+await checkoutFlow.openStepOne(SAUCE_LABS_BACKPACK);
+
+await checkoutFlow.openStepTwo(
+  [SAUCE_LABS_BACKPACK, SAUCE_LABS_BIKE_LIGHT],
+  checkoutData
+);
+
+await checkoutFlow.completeOrder(SAUCE_LABS_BACKPACK, checkoutData);
+```
+
+Related login and checkout validation scenarios are generated from typed datasets. Each dataset entry is still reported as an individual Playwright test, keeping the report readable while avoiding duplicated test logic.
 
 ### Execution Strategy ⚙️
 
@@ -149,11 +165,10 @@ This keeps locators stable and independent from visual CSS changes.
 
 ## Potential Improvements 💡
 
-- **Parameterized checkout flows**: Support different products and customer profiles without duplicating setup
-- **Data-driven tests**: Generate related validation scenarios from typed datasets
+- **Stronger page contracts**: Validate URLs, key page content, and image loading inside page assertions
 - **Multi-browser coverage**: Add Firefox and WebKit projects when broader compatibility testing is needed
 
-These are nice-to-haves for better maintainability as the codebase scales.
+These are future enhancements rather than gaps in the current functional E2E scope.
 
 ## Developer Helpers 🛠️
 

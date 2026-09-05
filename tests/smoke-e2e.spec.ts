@@ -10,27 +10,13 @@ test.describe('Smoke E2E Flows @smoke', () => {
   test('should complete full checkout flow: login, add products, checkout, and logout @smoke', async ({
     authenticatedPage: inventoryPage,
     loginPage,
-    cartPage,
-    checkoutStepOnePage,
-    checkoutStepTwoPage,
-    checkoutCompletePage,
+    checkoutFlow,
   }) => {
     await inventoryPage.sortBy(FILTER_OPTIONS.NAME_A_TO_Z);
-    await inventoryPage.addProductToCart(SAUCE_LABS_BACKPACK.name);
-    await inventoryPage.addProductToCart(SAUCE_LABS_BIKE_LIGHT.name);
-    await inventoryPage.cartLink.click();
-    await cartPage.assertLoaded();
-    await cartPage.checkoutButton.click();
-    await checkoutStepOnePage.assertLoaded();
-    await checkoutStepOnePage.fillCheckoutForm(
-      checkoutData.firstName,
-      checkoutData.lastName,
-      checkoutData.postalCode
+    const checkoutCompletePage = await checkoutFlow.completeOrder(
+      [SAUCE_LABS_BACKPACK, SAUCE_LABS_BIKE_LIGHT],
+      checkoutData
     );
-    await checkoutStepOnePage.continueButton.click();
-    await checkoutStepTwoPage.assertLoaded();
-    await checkoutStepTwoPage.finishButton.click();
-    await checkoutCompletePage.assertLoaded();
     await checkoutCompletePage.backHomeButton.click();
     await inventoryPage.assertLoaded();
     await inventoryPage.sidebarMenu.click();
@@ -43,26 +29,16 @@ test.describe('Smoke E2E Flows @smoke', () => {
     loginPage,
     inventoryDetailsPage,
     cartPage,
-    checkoutStepOnePage,
-    checkoutStepTwoPage,
-    checkoutCompletePage,
+    checkoutFlow,
   }) => {
     await inventoryPage.goToProductDetail(SAUCE_LABS_BACKPACK.name);
     await inventoryDetailsPage.assertLoaded();
     await inventoryDetailsPage.addToCartButton.click();
     await inventoryPage.cartLink.click();
     await cartPage.assertLoaded();
-    await cartPage.checkoutButton.click();
-    await checkoutStepOnePage.assertLoaded();
-    await checkoutStepOnePage.fillCheckoutForm(
-      checkoutData.firstName,
-      checkoutData.lastName,
-      checkoutData.postalCode
-    );
-    await checkoutStepOnePage.continueButton.click();
-    await checkoutStepTwoPage.assertLoaded();
-    await checkoutStepTwoPage.finishButton.click();
-    await checkoutCompletePage.assertLoaded();
+    await checkoutFlow.openStepOneFromCart();
+    await checkoutFlow.openStepTwoFromCurrentStep(checkoutData);
+    const checkoutCompletePage = await checkoutFlow.completeOrderFromOverview();
     await checkoutCompletePage.backHomeButton.click();
     await inventoryPage.assertLoaded();
     await inventoryPage.sidebarMenu.click();
@@ -75,8 +51,7 @@ test.describe('Smoke E2E Flows @smoke', () => {
     loginPage,
     inventoryDetailsPage,
     cartPage,
-    checkoutStepOnePage,
-    checkoutStepTwoPage,
+    checkoutFlow,
   }) => {
     await inventoryPage.addProductToCart(SAUCE_LABS_BACKPACK.name);
     await inventoryPage.addProductToCart(SAUCE_LABS_BIKE_LIGHT.name);
@@ -92,15 +67,9 @@ test.describe('Smoke E2E Flows @smoke', () => {
     await inventoryPage.assertLoaded();
     await inventoryPage.cartLink.click();
     await cartPage.assertLoaded();
-    await cartPage.checkoutButton.click();
-    await checkoutStepOnePage.assertLoaded();
-    await checkoutStepOnePage.fillCheckoutForm(
-      checkoutData.firstName,
-      checkoutData.lastName,
-      checkoutData.postalCode
-    );
-    await checkoutStepOnePage.continueButton.click();
-    await checkoutStepTwoPage.assertLoaded();
+    await checkoutFlow.openStepOneFromCart();
+    const checkoutStepTwoPage =
+      await checkoutFlow.openStepTwoFromCurrentStep(checkoutData);
     await checkoutStepTwoPage.cancelButton.click();
     await inventoryPage.assertLoaded();
     await inventoryPage.sidebarMenu.click();
