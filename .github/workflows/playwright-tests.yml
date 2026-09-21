@@ -7,7 +7,29 @@ on:
   workflow_dispatch: # Allows us to manually trigger the workflow from the GitHub Actions UI
 
 jobs:
+  checks:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Use Node.js 18.x
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+          cache: yarn
+
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
+
+      - name: Check types
+        run: yarn type-check
+
+      - name: Check formatting
+        run: yarn format:check
+
   test:
+    needs: checks
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
