@@ -4,7 +4,16 @@ End-to-end test automation suite for Sauce Demo (Swag Labs) using Playwright and
 
 ## Quick Start 🚀
 
-Prerequisites: Node.js, Yarn.
+Prerequisites: Node.js 24 LTS (24.22.0 or newer), npm 11.19.1 or newer within
+major version 11, and Yarn Classic.
+The Node.js major version is set in `.nvmrc` and shared with CI.
+
+If you use nvm:
+
+```bash
+nvm install
+nvm use
+```
 
 ```bash
 # Install dependencies and browsers

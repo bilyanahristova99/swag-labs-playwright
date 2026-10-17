@@ -2,6 +2,10 @@
   "name": "swag-labs",
   "version": "1.0.0",
   "main": "index.js",
+  "engines": {
+    "node": "^24.22.0",
+    "npm": "^11.19.1"
+  },
   "scripts": {
     "test": "playwright test",
     "test:headed": "playwright test --headed",
