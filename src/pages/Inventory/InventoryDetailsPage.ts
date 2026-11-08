@@ -9,20 +9,24 @@ export default class InventoryDetailsPage extends InventoryBasePage {
     super(page, 'inventory-item.html');
   }
 
+  private get productDetails(): Locator {
+    return this.page.locator('div.inventory_details');
+  }
+
   private get productName(): Locator {
-    return this.page.getByTestId('inventory-item-name');
+    return this.productDetails.getByTestId('inventory-item-name');
   }
 
   private get productPrice(): Locator {
-    return this.page.getByTestId('inventory-item-price');
+    return this.productDetails.getByTestId('inventory-item-price');
   }
 
   private get productDescription(): Locator {
-    return this.page.getByTestId('inventory-item-desc');
+    return this.productDetails.getByTestId('inventory-item-desc');
   }
 
   private get productImage(): Locator {
-    return this.page.locator('[data-test$="-img"]');
+    return this.productDetails.locator('[data-test$="-img"]');
   }
 
   public get addToCartButton(): Locator {
