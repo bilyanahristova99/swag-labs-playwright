@@ -4,6 +4,8 @@ import {
   SAUCE_LABS_BIKE_LIGHT,
   SAUCE_LABS_BOLT_T_SHIRT,
   SAUCE_LABS_FLEECE_JACKET,
+  SAUCE_LABS_ONESIE,
+  TEST_ALL_THE_THINGS_RED_T_SHIRT,
 } from '../src/constants/products';
 
 test.describe('Dynamic Catalog @inventory', () => {
@@ -37,8 +39,8 @@ test.describe('Dynamic Catalog @inventory', () => {
     const expectedNames = [
       SAUCE_LABS_BIKE_LIGHT.name,
       SAUCE_LABS_BOLT_T_SHIRT.name,
-      'Sauce Labs Onesie',
-      'Test.allTheThings() T-Shirt (Red)',
+      SAUCE_LABS_ONESIE.name,
+      TEST_ALL_THE_THINGS_RED_T_SHIRT.name,
       SAUCE_LABS_BACKPACK.name,
       SAUCE_LABS_FLEECE_JACKET.name,
     ].sort();

@@ -1,5 +1,9 @@
 # Swag Labs E2E Tests 🛒
 
+[![Playwright Tests](https://github.com/bilyanahristova99/swag-labs-playwright/actions/workflows/playwright-tests.yml/badge.svg?branch=main)](https://github.com/bilyanahristova99/swag-labs-playwright/actions/workflows/playwright-tests.yml)
+![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?logo=typescript&logoColor=white)
+![Playwright 1.65.1](https://img.shields.io/badge/Playwright-1.65.1-2EAD33)
+
 A Playwright + TypeScript test suite for [Sauce Demo](https://www.saucedemo.com/).
 From signing in to placing an order, with a few wrong turns along the way.
 
@@ -28,11 +32,11 @@ Use `yarn test:login`, `yarn test:inventory`, `yarn test:inventory-details`, or
 
 ## What’s covered ✅
 
-- **Sign-in and session** — valid, slow, and locked-out users, invalid credentials, and access after logout.
-- **Catalog** — product details, sorting, and all three Dynamic Catalog modes.
-- **Cart** — add from inventory or product details, remove items, and keep the cart after a refresh.
-- **Checkout** — required fields, recovery after correcting input, price breakdown, and cart contents after cancellation.
-- **Purchase smoke** — sign in, order two products, verify the order lines and totals, then check the confirmation and empty cart.
+- **Sign-in and session** - valid, slow, and locked-out users, invalid credentials, and access after logout.
+- **Catalog** - product details, sorting, and all three Dynamic Catalog modes.
+- **Cart** - add from inventory or product details, remove items, and keep the cart after a refresh.
+- **Checkout** - required fields, recovery after correcting input, price breakdown, and cart contents after cancellation.
+- **Purchase smoke** -с sign in, order two products, verify the order lines and totals, then check the confirmation and empty cart.
 
 The regular suite runs on Chromium.
 
@@ -49,15 +53,9 @@ User data lives in [`users.ts`](./src/constants/users.ts).
 
 ```mermaid
 flowchart LR
-    spec["Test spec"] -->|"requests"| fixtures["Playwright fixtures"]
-    spec -->|"calls when setup repeats"| flow["Checkout setup helper"]
-    spec -->|"reads"| data["Typed test data"]
-    spec -->|"calculates expected totals"| totals["Order totals helper"]
-    data -->|"product prices"| totals
-    fixtures -->|"provide"| pages["Page objects"]
-    flow -->|"uses"| pages
-    pages -->|"act on"| page["Page in a fresh browser context"]
-    page -->|"drives"| app["Sauce Demo"]
+    spec["Test spec"] --> fixtures["Playwright fixtures"]
+    fixtures --> pages["Page objects"]
+    pages --> app["Sauce Demo"]
 ```
 
 - **Specs describe the behavior.** The purchase smoke shows sign-in, cart setup, and checkout in named steps. You can see exactly what gets checked before and after pressing Finish.

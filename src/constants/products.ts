@@ -27,3 +27,17 @@ export const SAUCE_LABS_FLEECE_JACKET = {
   description:
     "It's not every day that you come across a midweight quarter-zip fleece jacket capable of handling everything from a relaxing day outdoors to a busy day at the office.",
 } satisfies Product;
+
+export const SAUCE_LABS_ONESIE = {
+  name: 'Sauce Labs Onesie',
+  price: '$7.99',
+  description:
+    "Rib snap infant onesie for the junior automation engineer in development. Reinforced 3-snap bottom closure, two-needle hemmed sleeved and bottom won't unravel.",
+} satisfies Product;
+
+export const TEST_ALL_THE_THINGS_RED_T_SHIRT = {
+  name: 'Test.allTheThings() T-Shirt (Red)',
+  price: '$15.99',
+  description:
+    'This classic Sauce Labs t-shirt is perfect to wear when cozying up to your keyboard to automate a few tests. Super-soft and comfy ringspun combed cotton.',
+} satisfies Product;
