@@ -85,3 +85,16 @@ test.describe('Login Page @login', () => {
     });
   }
 });
+
+test('should require sign-in to reopen inventory after logout @login @positive', async ({
+  loggedInInventoryPage,
+  loginPage,
+}) => {
+  await loggedInInventoryPage.sidebarMenu.click();
+  await loggedInInventoryPage.logoutLink.click();
+  await expect(loginPage.usernameInput).toBeVisible();
+
+  await loggedInInventoryPage.goto();
+  await expect(loginPage.usernameInput).toBeVisible();
+  await expect(loginPage.errorSection).toContainText('You can only access');
+});

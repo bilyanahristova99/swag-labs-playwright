@@ -9,11 +9,11 @@ import {
 } from '../src/utils/assertions';
 
 test.describe('Cart Page @cart', () => {
-  test.beforeEach(async ({ authenticatedPage, cartPage }) => {
-    await authenticatedPage.addProductToCart(SAUCE_LABS_BACKPACK.name);
-    await authenticatedPage.addProductToCart(SAUCE_LABS_BIKE_LIGHT.name);
-    await authenticatedPage.assertCartItemCount(2);
-    await authenticatedPage.cartLink.click();
+  test.beforeEach(async ({ loggedInInventoryPage, cartPage }) => {
+    await loggedInInventoryPage.addProductToCart(SAUCE_LABS_BACKPACK.name);
+    await loggedInInventoryPage.addProductToCart(SAUCE_LABS_BIKE_LIGHT.name);
+    await loggedInInventoryPage.assertCartItemCount(2);
+    await loggedInInventoryPage.cartLink.click();
     await cartPage.assertLoaded();
   });
 
@@ -33,6 +33,21 @@ test.describe('Cart Page @cart', () => {
       SAUCE_LABS_BIKE_LIGHT.description,
       1
     );
+  });
+
+  test('should preserve the exact cart contents after a reload @positive', async ({
+    page,
+    cartPage,
+  }) => {
+    await page.reload();
+    await cartPage.assertLoaded();
+
+    const products = [SAUCE_LABS_BACKPACK, SAUCE_LABS_BIKE_LIGHT];
+    await expect(cartPage.cartItem).toHaveCount(products.length);
+    for (const { name, price, description } of products) {
+      await cartPage.assertProductDetails(name, price, description);
+    }
+    await expect(cartPage.cartBadge).toHaveText('2');
   });
 
   test('should remove individual product from cart when remove button is clicked @positive', async ({

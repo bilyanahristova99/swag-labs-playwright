@@ -8,7 +8,11 @@ export class CheckoutCompletePage extends BasePage {
   }
 
   async assertLoaded(): Promise<void> {
-    await assertElementsVisible([this.page.getByTestId('complete-header')]);
+    await assertElementsVisible([this.confirmationHeading]);
+  }
+
+  public get confirmationHeading(): Locator {
+    return this.page.getByTestId('complete-header');
   }
 
   public get backHomeButton(): Locator {

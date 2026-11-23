@@ -1,4 +1,5 @@
 import { Page, Locator } from '@playwright/test';
+import type { CheckoutData } from '../../types/testData';
 import BasePage from '../BasePage';
 import { assertElementsVisible } from '../../utils/assertions';
 
@@ -35,6 +36,15 @@ export class CheckoutStepOnePage extends BasePage {
     await assertElementsVisible([
       this.page.getByTestId('checkout-info-container'),
     ]);
+  }
+
+  public async submitCheckoutForm(customer: CheckoutData): Promise<void> {
+    await this.fillCheckoutForm(
+      customer.firstName,
+      customer.lastName,
+      customer.postalCode
+    );
+    await this.continueButton.click();
   }
 
   public async fillCheckoutForm(

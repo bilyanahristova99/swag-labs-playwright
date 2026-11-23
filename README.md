@@ -42,8 +42,8 @@ yarn test:negative        # Error handling tests
 ```text
 src/
   constants/          # Test data, product information, enums, and selectors
-  fixtures/           # Page object, flow, and application-state fixtures
-  flows/              # Parameterized reusable business journeys
+  fixtures/           # Page object and application-state fixtures
+  flows/              # Reusable setup across pages
   interfaces/         # Shared TypeScript page contracts
   pages/              # Page Object Model classes grouped by feature
     BasePage.ts
@@ -58,6 +58,7 @@ tests/
   login.spec.ts
   inventory.spec.ts
   inventoryDetails.spec.ts
+  dynamicCatalog.spec.ts
   cart.spec.ts
   checkout.spec.ts
   smoke-e2e.spec.ts
@@ -81,10 +82,11 @@ Base URL: `https://www.saucedemo.com/` (configured in `playwright.config.ts`). R
 
 - **Login page**: Valid logins and data-driven error handling (empty fields, wrong credentials, locked out user)
 - **Inventory page**: Product listing, sorting, adding items to cart
-- **Product details page**: Viewing product info, adding items from detail page
-- **Shopping cart**: Viewing contents, removing items, navigating to checkout
-- **Checkout flow**: Data-driven form validation, product summary, price calculation, navigation, and successful completion
-- **Smoke E2E tests**: Full end-to-end journeys covering critical user flows (login → browse → checkout → logout)
+- **Product details page**: Viewing product info and verifying the item added from the detail page
+- **Dynamic Catalog**: Scroll-triggered loading, spinner completion, and slider selection
+- **Shopping cart**: Viewing and removing items, verifying persistence after refresh, and navigating to checkout
+- **Checkout flow**: Data-driven form validation, recovery after correcting input, price breakdown, and cart preservation after cancellation
+- **Smoke E2E tests**: Full end-to-end purchase covering the critical path (login → browse → checkout → confirmation)
 
 All tests are tagged with feature tags (`@login`, `@inventory`, `@cart`, `@checkout`, `@detail`, `@smoke`) and category tags (`@positive`, `@negative`).
 
@@ -95,18 +97,17 @@ All tests are tagged with feature tags (`@login`, `@inventory`, `@cart`, `@check
 
 ## Approach & Strategy 🏗️
 
-The suite follows the **Page Object Model** pattern, with typed test data, reusable business flows, and custom Playwright fixtures. Tests are tagged for easy filtering.
+The suite follows the **Page Object Model** pattern, with typed test data, reusable setup helpers, and custom Playwright fixtures. Tests are tagged for easy filtering.
 
 **Page-specific specs** (current)
 
 - Detailed tests for individual pages and features
 - Thorough validation: UI elements, data, error handling, edge cases
 
-**Smoke E2E flows** (implemented)
+**Purchase smoke**
 
-- Quick end-to-end journeys for critical paths (login → browse → checkout → logout)
-- Covers navigation between pages, adding/removing products, and complete checkout flows
-- Fast and stable, perfect for PR runs
+- Signs in through the UI and places an order containing two products
+- Verifies the exact order lines, quantities, price breakdown, confirmation, and empty cart
 
 ### Fixtures & Test State 🧩
 
@@ -118,35 +119,18 @@ The suite uses custom Playwright fixtures to provide page objects and reusable a
 - Are initialized only when requested by a test
 - Share the same isolated browser context within each test
 
-**Flow and state fixtures**
+**Application-state fixture**
 
-- `authenticatedPage` - Logs in with the standard user and provides a ready inventory page
-- `checkoutFlow` - Provides parameterized checkout journeys for one or multiple products and different customer data
+`loggedInInventoryPage` signs in as the standard user and returns the ready
+inventory page. Page objects share the test-scoped `page`. Each test receives
+a fresh browser context with independent authentication and cart state.
 
-Fixtures are composed through dependencies:
+### Checkout Setup & Test Data 🔄
 
-```text
-authenticatedPage
-        ↓
-checkoutFlow
-```
-
-Each test receives a fresh browser context, so cart contents, authentication, and application state are not shared between tests.
-
-### Parameterized Flows & Test Data 🔄
-
-`CheckoutFlow` separates reusable business journeys from individual page objects. Tests can open a specific checkout step or complete an order by supplying one product, multiple products, and typed customer data:
-
-```ts
-await checkoutFlow.openStepOne(SAUCE_LABS_BACKPACK);
-
-await checkoutFlow.openStepTwo(
-  [SAUCE_LABS_BACKPACK, SAUCE_LABS_BIKE_LIGHT],
-  checkoutData
-);
-
-await checkoutFlow.completeOrder(SAUCE_LABS_BACKPACK, checkoutData);
-```
+The checkout specs use `openCheckoutWithProducts` to add products to an empty
+cart and open the customer form. Each setup verifies the page it needs. The purchase smoke
+shows sign-in, cart setup, and checkout transitions directly in its reported
+steps.
 
 Related login and checkout validation scenarios are generated from typed datasets. Each dataset entry is still reported as an individual Playwright test, keeping the report readable while avoiding duplicated test logic.
 
@@ -154,7 +138,7 @@ Related login and checkout validation scenarios are generated from typed dataset
 
 Tests run fully in parallel locally for faster feedback. Playwright automatically selects the available worker count.
 
-In CI:
+In CI, the workflow runs on pull requests targeting `main`, pushes to `main`, and manual dispatch:
 
 - Tests are split into feature-based jobs
 - Each job uses one Playwright worker

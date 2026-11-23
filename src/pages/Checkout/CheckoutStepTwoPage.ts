@@ -1,8 +1,8 @@
 import { Page, Locator } from '@playwright/test';
 import BasePage from '../BasePage';
 import {
-  assertProductDetails,
-  STANDARD_PRODUCT_SELECTORS,
+  assertProductDetailsWithQuantity,
+  CART_PRODUCT_SELECTORS,
 } from '../../utils/productAssertions';
 import { assertElementsVisible } from '../../utils/assertions';
 
@@ -17,11 +17,19 @@ export class CheckoutStepTwoPage extends BasePage {
     ]);
   }
 
-  private get cartItem(): Locator {
+  public get cartItem(): Locator {
     return this.page.getByTestId('inventory-item');
   }
 
-  private get summaryTotal(): Locator {
+  public get summarySubtotal(): Locator {
+    return this.page.getByTestId('subtotal-label');
+  }
+
+  public get summaryTax(): Locator {
+    return this.page.getByTestId('tax-label');
+  }
+
+  public get summaryTotal(): Locator {
     return this.page.getByTestId('total-label');
   }
 
@@ -40,37 +48,17 @@ export class CheckoutStepTwoPage extends BasePage {
   public async assertProductDetails(
     productName: string,
     expectedPrice: string,
-    expectedDescription: string
+    expectedDescription: string,
+    expectedQuantity = 1
   ): Promise<void> {
     const item = this.getCartItemByName(productName);
-    await assertProductDetails(
+    await assertProductDetailsWithQuantity(
       item,
       productName,
       expectedPrice,
       expectedDescription,
-      STANDARD_PRODUCT_SELECTORS
+      expectedQuantity,
+      CART_PRODUCT_SELECTORS
     );
-  }
-
-  public async getTotalPrice(): Promise<string> {
-    const totalText = await this.summaryTotal.textContent();
-    const match = totalText?.match(/\$([0-9]+\.[0-9]{2})/);
-    return match ? match[1] : '';
-  }
-
-  public async calculateExpectedTotal(
-    productPrices: string[]
-  ): Promise<string> {
-    const sum = productPrices.reduce((acc, price) => {
-      const numericPrice = parseFloat(price.replace('$', ''));
-      return acc + numericPrice;
-    }, 0);
-
-    // Add tax (8% in Swag Labs)
-    const subtotal = sum;
-    const tax = subtotal * 0.08;
-    const total = subtotal + tax;
-
-    return total.toFixed(2);
   }
 }

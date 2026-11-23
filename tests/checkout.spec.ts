@@ -1,9 +1,11 @@
 import { test, expect } from '../src/fixtures/test.fixture';
+import { openCheckoutWithProducts } from '../src/flows/openCheckoutWithProducts';
 import checkoutData from '../src/constants/checkoutData';
 import { SAUCE_LABS_BACKPACK } from '../src/constants/products';
 import type { CheckoutData } from '../src/types/testData';
 import { assertFormFieldsVisible } from '../src/utils/formAssertions';
 import { assertButtonState } from '../src/utils/assertions';
+import { calculateExpectedOrderTotals } from '../src/utils/orderTotals';
 
 const validationCases: Array<{
   name: string;
@@ -29,12 +31,18 @@ const validationCases: Array<{
 
 test.describe('Checkout Process @checkout', () => {
   test.describe('Checkout Step One Page @checkout', () => {
-    test.beforeEach(async ({ checkoutFlow }) => {
-      await checkoutFlow.openStepOne(SAUCE_LABS_BACKPACK);
-    });
+    test.beforeEach(
+      async ({ loggedInInventoryPage, cartPage, checkoutStepOnePage }) => {
+        await loggedInInventoryPage.assertCartItemCount(0);
+        await openCheckoutWithProducts(
+          { inventoryPage: loggedInInventoryPage, cartPage },
+          [SAUCE_LABS_BACKPACK]
+        );
+        await checkoutStepOnePage.assertLoaded();
+      }
+    );
 
     test('should navigate to checkout step two when valid checkout data is submitted @positive', async ({
-      checkoutFlow,
       checkoutStepOnePage,
       checkoutStepTwoPage,
     }) => {
@@ -44,7 +52,7 @@ test.describe('Checkout Process @checkout', () => {
         checkoutStepOnePage.postalCodeInput,
       ]);
 
-      await checkoutFlow.openStepTwoFromCurrentStep(checkoutData);
+      await checkoutStepOnePage.submitCheckoutForm(checkoutData);
       await checkoutStepTwoPage.assertLoaded();
     });
 
@@ -52,12 +60,7 @@ test.describe('Checkout Process @checkout', () => {
       test(`should display an error when ${name} @negative`, async ({
         checkoutStepOnePage,
       }) => {
-        await checkoutStepOnePage.fillCheckoutForm(
-          customer.firstName,
-          customer.lastName,
-          customer.postalCode
-        );
-        await checkoutStepOnePage.continueButton.click();
+        await checkoutStepOnePage.submitCheckoutForm(customer);
 
         await expect(checkoutStepOnePage.errorMessage).toBeVisible();
         await expect(checkoutStepOnePage.errorMessage).toContainText(
@@ -65,6 +68,23 @@ test.describe('Checkout Process @checkout', () => {
         );
       });
     }
+
+    test('should continue after correcting a missing postal code @positive', async ({
+      checkoutStepOnePage,
+      checkoutStepTwoPage,
+    }) => {
+      await checkoutStepOnePage.submitCheckoutForm({
+        ...checkoutData,
+        postalCode: '',
+      });
+      await expect(checkoutStepOnePage.errorMessage).toContainText(
+        'Postal Code is required'
+      );
+
+      await checkoutStepOnePage.postalCodeInput.fill(checkoutData.postalCode);
+      await checkoutStepOnePage.continueButton.click();
+      await checkoutStepTwoPage.assertLoaded();
+    });
 
     test('should navigate back to cart when cancel button is clicked @positive', async ({
       checkoutStepOnePage,
@@ -80,9 +100,23 @@ test.describe('Checkout Process @checkout', () => {
   });
 
   test.describe('Checkout Step Two Page @checkout', () => {
-    test.beforeEach(async ({ checkoutFlow }) => {
-      await checkoutFlow.openStepTwo(SAUCE_LABS_BACKPACK, checkoutData);
-    });
+    test.beforeEach(
+      async ({
+        loggedInInventoryPage,
+        cartPage,
+        checkoutStepOnePage,
+        checkoutStepTwoPage,
+      }) => {
+        await loggedInInventoryPage.assertCartItemCount(0);
+        await openCheckoutWithProducts(
+          { inventoryPage: loggedInInventoryPage, cartPage },
+          [SAUCE_LABS_BACKPACK]
+        );
+        await checkoutStepOnePage.assertLoaded();
+        await checkoutStepOnePage.submitCheckoutForm(checkoutData);
+        await checkoutStepTwoPage.assertLoaded();
+      }
+    );
 
     test('should display correct product details for items in checkout summary @positive', async ({
       checkoutStepTwoPage,
@@ -97,17 +131,23 @@ test.describe('Checkout Process @checkout', () => {
     test('should calculate and display correct total price including tax @positive', async ({
       checkoutStepTwoPage,
     }) => {
-      const expectedTotal = await checkoutStepTwoPage.calculateExpectedTotal([
-        SAUCE_LABS_BACKPACK.price,
-      ]);
-      const actualTotal = await checkoutStepTwoPage.getTotalPrice();
+      const expected = calculateExpectedOrderTotals([SAUCE_LABS_BACKPACK]);
 
-      expect(actualTotal).toBe(expectedTotal);
+      await expect(checkoutStepTwoPage.summarySubtotal).toHaveText(
+        `Item total: ${expected.subtotal}`
+      );
+      await expect(checkoutStepTwoPage.summaryTax).toHaveText(
+        `Tax: ${expected.tax}`
+      );
+      await expect(checkoutStepTwoPage.summaryTotal).toHaveText(
+        `Total: ${expected.total}`
+      );
     });
 
-    test('should navigate back to inventory page when cancel button is clicked @positive', async ({
+    test('should retain the selected product when checkout is cancelled from overview @positive', async ({
       checkoutStepTwoPage,
       inventoryPage,
+      cartPage,
     }) => {
       await assertButtonState(checkoutStepTwoPage.cancelButton, {
         visible: true,
@@ -116,13 +156,18 @@ test.describe('Checkout Process @checkout', () => {
       await checkoutStepTwoPage.cancelButton.click();
       await inventoryPage.assertLoaded();
       await inventoryPage.assertCartItemCount(1);
+      await inventoryPage.cartLink.click();
+      await cartPage.assertLoaded();
+      await expect(cartPage.cartItem).toHaveCount(1);
+      const { name, price, description } = SAUCE_LABS_BACKPACK;
+      await cartPage.assertProductDetails(name, price, description);
     });
 
     test('should navigate to checkout complete page when finish button is clicked @positive', async ({
-      checkoutFlow,
+      checkoutStepTwoPage,
       checkoutCompletePage,
     }) => {
-      await checkoutFlow.completeOrderFromOverview();
+      await checkoutStepTwoPage.finishButton.click();
       await checkoutCompletePage.assertLoaded();
     });
   });

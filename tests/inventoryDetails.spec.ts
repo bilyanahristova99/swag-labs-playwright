@@ -3,8 +3,8 @@ import { SAUCE_LABS_BACKPACK } from '../src/constants/products';
 import { assertElementVisible } from '../src/utils/assertions';
 
 test.describe('Product Detail Page @detail', () => {
-  test.beforeEach(async ({ authenticatedPage, inventoryDetailsPage }) => {
-    await authenticatedPage.goToProductDetail(SAUCE_LABS_BACKPACK.name);
+  test.beforeEach(async ({ loggedInInventoryPage, inventoryDetailsPage }) => {
+    await loggedInInventoryPage.goToProductDetail(SAUCE_LABS_BACKPACK.name);
     await inventoryDetailsPage.assertLoaded();
   });
 
@@ -50,7 +50,7 @@ test.describe('Product Detail Page @detail', () => {
     await inventoryPage.assertLoaded();
   });
 
-  test('should navigate to cart page when cart link is clicked @positive', async ({
+  test('should show the exact product added from the detail page in the cart @positive', async ({
     cartPage,
     inventoryDetailsPage,
   }) => {
@@ -59,5 +59,8 @@ test.describe('Product Detail Page @detail', () => {
     await assertElementVisible(inventoryDetailsPage.cartLink);
     await inventoryDetailsPage.cartLink.click();
     await cartPage.assertLoaded();
+    await expect(cartPage.cartItem).toHaveCount(1);
+    const { name, price, description } = SAUCE_LABS_BACKPACK;
+    await cartPage.assertProductDetails(name, price, description);
   });
 });

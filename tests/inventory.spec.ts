@@ -8,7 +8,7 @@ import {
 
 test.describe('Inventory Page @inventory', () => {
   test('should display product with correct name, price, description and image @positive', async ({
-    authenticatedPage: inventoryPage,
+    loggedInInventoryPage: inventoryPage,
   }) => {
     await inventoryPage.assertProductElements(
       SAUCE_LABS_BACKPACK.name,
@@ -19,7 +19,7 @@ test.describe('Inventory Page @inventory', () => {
   });
 
   test('should toggle between add and remove button when product is added to cart @positive', async ({
-    authenticatedPage: inventoryPage,
+    loggedInInventoryPage: inventoryPage,
   }) => {
     const productName = SAUCE_LABS_BACKPACK.name;
     await inventoryPage.assertAddButtonVisible(productName);
@@ -28,7 +28,7 @@ test.describe('Inventory Page @inventory', () => {
   });
 
   test('should add single product to cart and update cart badge count @positive', async ({
-    authenticatedPage: inventoryPage,
+    loggedInInventoryPage: inventoryPage,
   }) => {
     await expect(inventoryPage.cartLink).toBeVisible();
     await inventoryPage.assertCartItemCount(0);
@@ -37,7 +37,7 @@ test.describe('Inventory Page @inventory', () => {
   });
 
   test('should add multiple products to cart and update cart badge count @positive', async ({
-    authenticatedPage: inventoryPage,
+    loggedInInventoryPage: inventoryPage,
   }) => {
     await expect(inventoryPage.cartLink).toBeVisible();
     await inventoryPage.assertCartItemCount(0);
@@ -49,7 +49,7 @@ test.describe('Inventory Page @inventory', () => {
   });
 
   test('should remove product from cart and update cart badge count @positive', async ({
-    authenticatedPage: inventoryPage,
+    loggedInInventoryPage: inventoryPage,
   }) => {
     await expect(inventoryPage.cartLink).toBeVisible();
     await inventoryPage.assertCartItemCount(0);
@@ -63,7 +63,7 @@ test.describe('Inventory Page @inventory', () => {
 
   test.describe('Sorting @sort', () => {
     test('should sort products alphabetically from A to Z @positive', async ({
-      authenticatedPage: inventoryPage,
+      loggedInInventoryPage: inventoryPage,
     }) => {
       await expect(inventoryPage.sortDropdown).toBeVisible();
       await inventoryPage.sortBy(FILTER_OPTIONS.NAME_A_TO_Z);
@@ -73,7 +73,7 @@ test.describe('Inventory Page @inventory', () => {
     });
 
     test('should sort products alphabetically from Z to A @positive', async ({
-      authenticatedPage: inventoryPage,
+      loggedInInventoryPage: inventoryPage,
     }) => {
       await expect(inventoryPage.sortDropdown).toBeVisible();
       await inventoryPage.sortBy(FILTER_OPTIONS.NAME_Z_TO_A);
@@ -83,7 +83,7 @@ test.describe('Inventory Page @inventory', () => {
     });
 
     test('should sort products by price from low to high @positive', async ({
-      authenticatedPage: inventoryPage,
+      loggedInInventoryPage: inventoryPage,
     }) => {
       await expect(inventoryPage.sortDropdown).toBeVisible();
       await inventoryPage.sortBy(FILTER_OPTIONS.PRICE_LOW_TO_HIGH);
@@ -93,7 +93,7 @@ test.describe('Inventory Page @inventory', () => {
     });
 
     test('should sort products by price from high to low @positive', async ({
-      authenticatedPage: inventoryPage,
+      loggedInInventoryPage: inventoryPage,
     }) => {
       await expect(inventoryPage.sortDropdown).toBeVisible();
       await inventoryPage.sortBy(FILTER_OPTIONS.PRICE_HIGH_TO_LOW);
